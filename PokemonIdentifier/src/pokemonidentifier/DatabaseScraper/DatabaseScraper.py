@@ -1,37 +1,37 @@
-import requests
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+import os
+
+# Set up Firefox options
+firefox_options = Options()
+firefox_options.binary_location = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"  # Update path here
+firefox_options.add_argument("--headless")  # Optional: run in headless mode
+
+# Set up GeckoDriver path
+geckodriver_path = 'C:\\Users\\willi\\Downloads\\geckodriver-v0.35.0-win32\\geckodriver.exe'
+service = Service(geckodriver_path)
+
+# Initialize Firefox driver with specified binary and options
+driver = webdriver.Firefox(service=service, options=firefox_options)
+
+# Navigate to the URL
+url = 'https://pokemon.gameinfo.io/'
+driver.get(url)
+
+# Extract page content with BeautifulSoup
 from bs4 import BeautifulSoup
+soup = BeautifulSoup(driver.page_source, "html.parser")
 
-url = 'https://pokemon.gameinfo.io/' #URL of PokemonGO list of Pokemon
-response = requests.get(url)
+# Find all Pokémon links and extract data
+pokemon_links = soup.find_all('a', class_='pokemon')
+count = 0
+for pokemon_link in pokemon_links:
+    count += 1
+    name = pokemon_link['data-name']  # Extracting from data attribute
+    print(f"Name: {name}")
 
-if response.status_code == 200:
-    page_content = response.content
-    
-    soup = BeautifulSoup(response.content, "html.parser")
+print(f'Total Pokémon processed: {count}')
 
-    # Find the <a> tag with the Pokémon data
-    pokemon_links = soup.find_all('a', class_='pokemon')
-
-    # Extract the desired data
-    count = 0
-    for pokemon_link in pokemon_links:
-        count += 1
-        name = pokemon_link['data-name']  # Extracting from data attribute
-        
-        #english_name = pokemon_link['data-name-en']  # Extracting English name
-        #image_src = pokemon_link.find('img')['src']  # Extracting image source
-        #pokemon_id = pokemon_link.find('div', class_='id').text  # Extracting ID
-
-        #pokemon_type = pokemon_link.find('div', class_='type').text  # Extracting Pokémon type
-        # Print the extracted data
-        print(f"Name: {name}")
-        #print(f"English Name: {english_name}")
-        #print(f"Image Source: {image_src}")
-        #print(f"ID: {pokemon_id}")
-        #print(f"Type: {pokemon_type}")
-        #print("-" * 20)  # Separator for readability
-else:
-    print(f"Failed to retrieve the webpage. Status code: {response.status_code}")
-    print(response.content)
-
-print(f'Total Pkmn {count}')
+# Close the browser
+driver.quit()
