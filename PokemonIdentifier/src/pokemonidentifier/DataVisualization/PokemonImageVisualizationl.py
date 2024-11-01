@@ -102,8 +102,27 @@ class PokemonDashboard(param.Parameterized):
             """,
             sizing_mode='stretch_width'
         )
+        
+        description = pn.pane.Markdown(
+            """
+            ### Graph Descriptions
+            - **Number of Shiny and Normal Pokémon Images**: This bar plot shows the count of shiny and normal Pokémon images.
+            - **Distinct Pokémon Forms Based on Gender**: This bar plot displays the number of distinct Pokémon forms categorized by gender.
+            - **Histogram of Average Color Intensity of Pokémon Images**: This histogram represents the distribution of average color intensity across all Pokémon images.
+            """,
+            width=300
+        )
+        
         return pn.Column(
             header,
+            pn.Row(
+                pn.Column(
+                    self.shiny_plot_pane,
+                    self.gender_plot_pane,
+                    self.color_plot_pane,
+                ),
+                description
+            ),
             pn.Row(
                 pn.Column(
                     pn.Param(self.param, widgets={
@@ -113,17 +132,14 @@ class PokemonDashboard(param.Parameterized):
                         'location_filter': pn.widgets.Select
                     }),
                     self.entry_counter,
+                    self.preview_button,
                 ),
             ),
-            self.data_table,
-            self.preview_button,
             pn.Column(
                 pn.Row(self.image_gallery, sizing_mode='stretch_width'),
                 sizing_mode='stretch_width', scroll=True, height=400
             ),  # Enable horizontal scrolling
-            self.shiny_plot_pane,
-            self.gender_plot_pane,
-            self.color_plot_pane
+            self.data_table
         )
 
 def get_image_data(image_path):
