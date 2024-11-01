@@ -89,7 +89,7 @@ class PokemonDashboard(param.Parameterized):
         images = []
         for _, row in self.filtered_data.iterrows():
             image_path = os.path.join(IMAGE_FOLDER_PATH, row['filename'])
-            images.append(pn.pane.PNG(image_path, width=300, height=300))
+            images.append(pn.Column(pn.pane.PNG(image_path, width=300, height=300), pn.pane.Markdown(row['filename'], width=300)))
         self.image_gallery.extend(images)
 
     def view(self):
@@ -103,12 +103,46 @@ class PokemonDashboard(param.Parameterized):
             sizing_mode='stretch_width'
         )
         
-        description = pn.pane.Markdown(
+        shiny_description = pn.pane.Markdown(
             """
-            ### Graph Descriptions
-            - **Number of Shiny and Normal Pokémon Images**: This bar plot shows the count of shiny and normal Pokémon images.
-            - **Distinct Pokémon Forms Based on Gender**: This bar plot displays the number of distinct Pokémon forms categorized by gender.
-            - **Histogram of Average Color Intensity of Pokémon Images**: This histogram represents the distribution of average color intensity across all Pokémon images.
+            **Number of Shiny and Normal Pokémon Images**: 
+            This bar plot shows the count of shiny and normal Pokémon images. \n
+            Pokemon appearance changes whether or not it is "Shiny" or "Normal".\n 
+            It is expected that there are an equal number of "Shiny" and "Normal" Pokémon images.
+            """,
+            width=300
+        )
+        
+        gender_description = pn.pane.Markdown(
+            """
+            **Distinct Pokémon Forms Based on Gender**: 
+            This bar plot displays the number of distinct Pokémon Images categorized by gender.\n
+            Some Pokemon look different if they are Female or Male. Pokemon images that do not differ based on Pokemon gender are labeled as "Male & Female".\n
+            It is expected that there are significantly more Pokemon images that do not depend on the featured Pokemon's gender. Additionally, Pokemon images that feature a Male-exclusive and Female-exclusive counts are expected to be roughly equal.
+            """,
+            width=300
+        )
+        
+        color_description = pn.pane.Markdown(
+            """
+            **Histogram of Average Color Intensity of Pokémon Images**: 
+            This histogram represents the distribution of average color intensity across all Pokémon images. Bars on the histogram represent the average color of the image.\n 
+            Average color intensity was taken by averaging the RGB values of each pixel in the image.\n
+            It is expected that three groupings appear reflecting the three distinct backgrounds used in the dataset. This is becuase the backgrounds dominate the images with the Pokemon featured being only a small proportion of the image.
+            """,
+            width=300
+        )
+        
+        filter_description = pn.pane.Markdown(
+            """
+            **Filter Options**: 
+            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.\n
+            **Total Entries Displayed**: 
+            Shows the number of images in dataset based on filter preferences.\n
+            **Preview Images**:
+            Displays all images that are currently meet filter prefences. 
+            (Not recommended when large number of entries are displayed)
+            
             """,
             width=300
         )
@@ -116,12 +150,16 @@ class PokemonDashboard(param.Parameterized):
         return pn.Column(
             header,
             pn.Row(
-                pn.Column(
-                    self.shiny_plot_pane,
-                    self.gender_plot_pane,
-                    self.color_plot_pane,
-                ),
-                description
+                self.shiny_plot_pane,
+                shiny_description
+            ),
+            pn.Row(
+                self.gender_plot_pane,
+                gender_description
+            ),
+            pn.Row(
+                self.color_plot_pane,
+                color_description
             ),
             pn.Row(
                 pn.Column(
@@ -134,6 +172,7 @@ class PokemonDashboard(param.Parameterized):
                     self.entry_counter,
                     self.preview_button,
                 ),
+                filter_description
             ),
             pn.Column(
                 pn.Row(self.image_gallery, sizing_mode='stretch_width'),
