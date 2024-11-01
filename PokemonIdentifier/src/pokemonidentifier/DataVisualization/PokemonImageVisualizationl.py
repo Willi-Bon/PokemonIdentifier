@@ -22,12 +22,17 @@ class PokemonDashboard(param.Parameterized):
         self.filtered_data = self.image_data.copy()
         self.data_table = pn.widgets.Tabulator(self.filtered_data, name='Image Data', sizing_mode='stretch_width', height=400)
         self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Displayed Entries: {len(self.filtered_data)}</div>")
+        self.preview_button = pn.widgets.Button(name='Preview Images', button_type='primary')
+        self.image_gallery = pn.Row()  # Pane to display the images in a row
         self.shiny_plot_pane = pn.pane.Matplotlib()
         self.gender_plot_pane = pn.pane.Matplotlib()
         self.color_plot_pane = pn.pane.Matplotlib()
         self.param.location_filter.objects = ['All'] + sorted(self.image_data['location'].unique().tolist())
         self.create_static_graphs()
         self.update_dashboard()
+
+        # Add a callback to update the image gallery when the button is pressed
+        self.preview_button.on_click(self.update_image_gallery)
 
     def create_static_graphs(self):
         # Create a bar plot for the number of "Shiny" and "Normal" Pokémon images
@@ -79,6 +84,14 @@ class PokemonDashboard(param.Parameterized):
         self.data_table.value = self.filtered_data
         self.entry_counter.object = f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>"
 
+    def update_image_gallery(self, event):
+        self.image_gallery.clear()  # Clear the current gallery
+        images = []
+        for _, row in self.filtered_data.iterrows():
+            image_path = os.path.join(IMAGE_FOLDER_PATH, row['filename'])
+            images.append(pn.pane.PNG(image_path, width=300, height=300))
+        self.image_gallery.extend(images)
+
     def view(self):
         return pn.Column(
             pn.Row(
@@ -93,6 +106,11 @@ class PokemonDashboard(param.Parameterized):
                 ),
             ),
             self.data_table,
+            self.preview_button,
+            pn.Column(
+                pn.Row(self.image_gallery, sizing_mode='stretch_width'),
+                sizing_mode='stretch_width', scroll=True, height=400
+            ),  # Enable horizontal scrolling
             self.shiny_plot_pane,
             self.gender_plot_pane,
             self.color_plot_pane
@@ -113,25 +131,18 @@ def get_image_data(image_path):
             - 'mode' (str): The mode of the image (e.g., 'RGB', 'L').
             - 'mean_pixel_value' (float): The mean value of the pixels in the image.
             - 'average_color' (tuple): The average color of the image as an (R, G, B) tuple.
-            - 'average_color_portion' (tuple): The average color of the specified portion of the image as an (R, G, B) tuple.
     """
     with Image.open(image_path) as img:  # Open the image file
         img_array = np.array(img)  # Convert the image to a numpy array
         average_color = tuple(np.mean(img_array, axis=(0, 1)).astype(int))  # Calculate the average color
         
-        # Calculate the average color for the specified portion (row 5, column 3 in a 5x5 grid)
-        height, width, _ = img_array.shape
-        portion = img_array[4*height//5:5*height//5, 2*width//5:3*width//5]
-        average_color_portion = tuple(np.mean(portion, axis=(0, 1)).astype(int))
-        
         return {
-            'filename': os.path.basename(image_path),  # Get the filename
-            'width': img.width,  # Get the width of the image
-            'height': img.height,  # Get the height of the image
-            'mode': img.mode,  # Get the mode of the image
-            'mean_pixel_value': np.mean(img_array),  # Calculate the mean pixel value
-            'average_color': average_color,  # Get the average color
-            'average_color_portion': average_color_portion  # Get the average color of the specified portion
+            'filename': os.path.basename(image_path),
+            'width': img.width,
+            'height': img.height,
+            'mode': img.mode,
+            'mean_pixel_value': np.mean(img_array),
+            'average_color': average_color
         }
 
 def parse_filename(filename):
@@ -149,7 +160,7 @@ def parse_filename(filename):
     location, name = location_name.split('_', 1)
     
     return {
-        'index': None,  # Placeholder for index, to be set later
+        'index': None,
         'location': location,
         'name': name,
         'shiny': shiny,
@@ -167,7 +178,7 @@ def load_images_with_metadata(folder_path):
             image_info.update(metadata)  # Merge the image data with the metadata
             image_data.append(image_info)  # Append the combined data to the list
     df = pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
-    df = df[['index', 'filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
+    df = df[['filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
     return df
 
 dashboard = PokemonDashboard()
