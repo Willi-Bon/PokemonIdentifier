@@ -20,13 +20,50 @@ class PokemonDashboard(param.Parameterized):
         super().__init__(**params)
         self.image_data = load_images_with_metadata(IMAGE_FOLDER_PATH)
         self.filtered_data = self.image_data.copy()
-        self.data_table = pn.widgets.Tabulator(self.filtered_data.drop(columns=['width', 'height', 'mode', 'index']), name='Image Data', sizing_mode='stretch_width', height=400)
-        self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>")
+        self.data_table = pn.widgets.Tabulator(self.filtered_data, name='Image Data', sizing_mode='stretch_width', height=400)
+        self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Displayed Entries: {len(self.filtered_data)}</div>")
         self.shiny_plot_pane = pn.pane.Matplotlib()
         self.gender_plot_pane = pn.pane.Matplotlib()
         self.color_plot_pane = pn.pane.Matplotlib()
         self.param.location_filter.objects = ['All'] + sorted(self.image_data['location'].unique().tolist())
+        self.create_static_graphs()
         self.update_dashboard()
+
+    def create_static_graphs(self):
+        # Create a bar plot for the number of "Shiny" and "Normal" Pokémon images
+        shiny_counts = self.image_data['shiny'].value_counts()
+        fig, ax = plt.subplots()
+        shiny_counts.plot(kind='bar', ax=ax, color=['gray', 'orange'])
+        ax.set_title('Number of Shiny and Normal Pokémon Images')
+        ax.set_xlabel('Shiny Status')
+        ax.set_ylabel('Count')
+        ax.set_xticklabels(shiny_counts.index, rotation=0)  # Set text horizontal
+        ax.grid(True, axis='y')  # Add horizontal gridlines only
+        self.shiny_plot_pane.object = fig  # Update the plot
+
+        # Create a bar plot for the number of "Male & Female", "Male", and "Female" Pokémon images
+        gender_counts = self.image_data['gender'].value_counts()
+        fig2, ax2 = plt.subplots()
+        gender_counts.plot(kind='bar', ax=ax2, color=['purple', 'blue', 'red'])
+        ax2.set_title('Distinct Pokemon Forms Based on Gender')
+        ax2.set_xlabel('Gender')
+        ax2.set_ylabel('Count')
+        ax2.set_xticklabels(gender_counts.index, rotation=0)  # Set text horizontal
+        ax2.grid(True, axis='y')  # Add horizontal gridlines only
+        self.gender_plot_pane.object = fig2  # Update the plot
+
+        # Create a histogram for the average color intensity of each image
+        mean_colors = [np.mean(row['average_color']) for _, row in self.image_data.iterrows()]
+        fig3, ax3 = plt.subplots()
+        n, bins, patches = ax3.hist(mean_colors, bins=30, edgecolor='black')
+        for patch, row in zip(patches, self.image_data.iterrows()):
+            normalized_color = [c / 255.0 for c in row[1]['average_color']]
+            patch.set_facecolor(normalized_color)
+        ax3.set_title('Histogram of Average Color Intensity of Pokémon Images')
+        ax3.set_xlabel('Mean Color Intensity')
+        ax3.set_ylabel('Frequency')
+        ax3.grid(True, axis='y')  # Add horizontal gridlines only
+        self.color_plot_pane.object = fig3  # Update the plot
 
     @param.depends('shiny_filter', 'gender_filter', 'name_filter', 'location_filter', watch=True)
     def update_dashboard(self):
@@ -39,43 +76,8 @@ class PokemonDashboard(param.Parameterized):
             self.filtered_data = self.filtered_data[self.filtered_data['name'].str.contains(self.name_filter, case=False)]
         if self.location_filter != 'All':
             self.filtered_data = self.filtered_data[self.filtered_data['location'] == self.location_filter]
-        self.data_table.value = self.filtered_data.drop(columns=['width', 'height', 'mode', 'index'])
+        self.data_table.value = self.filtered_data
         self.entry_counter.object = f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>"
-
-        # Create a bar plot for the number of "Shiny" and "Normal" Pokémon images
-        shiny_counts = self.filtered_data['shiny'].value_counts()
-        fig, ax = plt.subplots()
-        shiny_counts.plot(kind='bar', ax=ax, color=['gray', 'orange'])
-        ax.set_title('Number of Shiny and Normal Pokémon Images')
-        ax.set_xlabel('Shiny Status')
-        ax.set_ylabel('Count')
-        ax.set_xticklabels(shiny_counts.index, rotation=0)  # Set text horizontal
-        ax.grid(True, axis='y')  # Add horizontal gridlines only
-        self.shiny_plot_pane.object = fig  # Update the plot
-
-        # Create a bar plot for the number of "Male & Female", "Male", and "Female" Pokémon images
-        gender_counts = self.filtered_data['gender'].value_counts()
-        fig2, ax2 = plt.subplots()
-        gender_counts.plot(kind='bar', ax=ax2, color=['purple', 'blue', 'red'])
-        ax2.set_title('Distinct Pokemon Forms Based on Gender')
-        ax2.set_xlabel('Gender')
-        ax2.set_ylabel('Count')
-        ax2.set_xticklabels(gender_counts.index, rotation=0)  # Set text horizontal
-        ax2.grid(True, axis='y')  # Add horizontal gridlines only
-        self.gender_plot_pane.object = fig2  # Update the plot
-
-        # Create a histogram for the average color intensity of each image
-        mean_colors = [np.mean(row['average_color']) for _, row in self.filtered_data.iterrows()]
-        fig3, ax3 = plt.subplots()
-        n, bins, patches = ax3.hist(mean_colors, bins=30, edgecolor='black')
-        for patch, row in zip(patches, self.filtered_data.iterrows()):
-            normalized_color = [c / 255.0 for c in row[1]['average_color']]
-            patch.set_facecolor(normalized_color)
-        ax3.set_title('Histogram of Average Color Intensity of Pokémon Images')
-        ax3.set_xlabel('Mean Color Intensity')
-        ax3.set_ylabel('Frequency')
-        ax3.grid(True, axis='y')  # Add horizontal gridlines only
-        self.color_plot_pane.object = fig3  # Update the plot
 
     def view(self):
         return pn.Column(
@@ -164,7 +166,9 @@ def load_images_with_metadata(folder_path):
             metadata['index'] = idx  # Set the index
             image_info.update(metadata)  # Merge the image data with the metadata
             image_data.append(image_info)  # Append the combined data to the list
-    return pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
+    df = pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
+    df = df[['index', 'filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
+    return df
 
 dashboard = PokemonDashboard()
 pn.serve(dashboard.view)
