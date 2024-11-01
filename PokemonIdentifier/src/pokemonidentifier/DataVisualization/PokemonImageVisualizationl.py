@@ -8,8 +8,9 @@ from PIL import Image  # Importing the Python Imaging Library for image processi
 import numpy as np  # Importing numpy for numerical operations
 import matplotlib.pyplot as plt  # Importing matplotlib for plotting
 import param  # Importing param for creating interactive widgets
+from tqdm import tqdm  # Importing tqdm for progress bar
 
-#IMAGE_FOLDER_PATH = r'C:\Users\willi\Documents\Drexel\Fall Quart 5\MEM 679 - Machine Learning\pokemon_images_subset (Testing Only)\combined_images'
+# IMAGE_FOLDER_PATH = r'C:\Users\willi\Documents\Drexel\Fall Quart 5\MEM 679 - Machine Learning\pokemon_images_subset (Testing Only)\combined_images'
 def select_folder():
     root = tk.Tk()
     root.withdraw()  # Hide the root window
@@ -27,7 +28,8 @@ class PokemonDashboard(param.Parameterized):
 
     def __init__(self, **params):
         super().__init__(**params)
-        self.image_data = load_images_with_metadata(IMAGE_FOLDER_PATH)
+        self.progress = pn.widgets.Progress(name='Initializing Dashboard', value=0, max=100, sizing_mode='stretch_width')
+        self.image_data = self.load_images_with_metadata(IMAGE_FOLDER_PATH)
         self.filtered_data = self.image_data.copy()
         self.data_table = pn.widgets.Tabulator(self.filtered_data, name='Image Data', sizing_mode='stretch_width', height=400)
         self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Displayed Entries: {len(self.filtered_data)}</div>")
@@ -42,6 +44,23 @@ class PokemonDashboard(param.Parameterized):
 
         # Add a callback to update the image gallery when the button is pressed
         self.preview_button.on_click(self.update_image_gallery)
+
+    def load_images_with_metadata(self, folder_path):
+        image_data = []  # Initialize an empty list to store image data
+        files = os.listdir(folder_path)
+        total_files = len(files)
+        for idx, file_name in enumerate(tqdm(files, desc="Loading Images")):  # Iterate over all files in the folder
+            if file_name.endswith('.png'):  # Check if the file is a PNG image
+                image_path = os.path.join(folder_path, file_name)  # Get the full path of the image
+                image_info = get_image_data(image_path)  # Get the image data
+                metadata = parse_filename(file_name)  # Parse the filename for metadata
+                metadata['index'] = idx  # Set the index
+                image_info.update(metadata)  # Merge the image data with the metadata
+                image_data.append(image_info)  # Append the combined data to the list
+            self.progress.value = int((idx + 1) / total_files * 100)  # Update progress bar
+        df = pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
+        df = df[['filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
+        return df
 
     def create_static_graphs(self):
         # Create a bar plot for the number of "Shiny" and "Normal" Pokémon images
@@ -98,7 +117,10 @@ class PokemonDashboard(param.Parameterized):
         images = []
         for _, row in self.filtered_data.iterrows():
             image_path = os.path.join(IMAGE_FOLDER_PATH, row['filename'])
-            images.append(pn.Column(pn.pane.PNG(image_path, width=300, height=300), pn.pane.Markdown(row['filename'], width=300)))
+            images.append(pn.Column(
+                pn.pane.PNG(image_path, width=300, height=300),
+                pn.pane.Markdown(f"<div style='text-align: center; margin-top: -10px;'>{row['filename']}</div>", width=300)
+            ))
         self.image_gallery.extend(images)
 
     def view(self):
@@ -158,6 +180,7 @@ class PokemonDashboard(param.Parameterized):
         
         return pn.Column(
             header,
+            self.progress,
             pn.Row(
                 self.shiny_plot_pane,
                 shiny_description
@@ -240,20 +263,6 @@ def parse_filename(filename):
         'shiny': shiny,
         'gender': gender
     }
-
-def load_images_with_metadata(folder_path):
-    image_data = []  # Initialize an empty list to store image data
-    for idx, file_name in enumerate(os.listdir(folder_path)):  # Iterate over all files in the folder
-        if file_name.endswith('.png'):  # Check if the file is a PNG image
-            image_path = os.path.join(folder_path, file_name)  # Get the full path of the image
-            image_info = get_image_data(image_path)  # Get the image data
-            metadata = parse_filename(file_name)  # Parse the filename for metadata
-            metadata['index'] = idx  # Set the index
-            image_info.update(metadata)  # Merge the image data with the metadata
-            image_data.append(image_info)  # Append the combined data to the list
-    df = pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
-    df = df[['filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
-    return df
 
 dashboard = PokemonDashboard()
 pn.serve(dashboard.view)
