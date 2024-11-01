@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter import filedialog
+
 import panel as pn  # Importing the Panel library for creating interactive dashboards
 import pandas as pd  # Importing pandas for data manipulation and analysis
 import os  # Importing os for interacting with the operating system
@@ -6,9 +9,15 @@ import numpy as np  # Importing numpy for numerical operations
 import matplotlib.pyplot as plt  # Importing matplotlib for plotting
 import param  # Importing param for creating interactive widgets
 
-pn.extension()  # Initializing Panel extension
+#IMAGE_FOLDER_PATH = r'C:\Users\willi\Documents\Drexel\Fall Quart 5\MEM 679 - Machine Learning\pokemon_images_subset (Testing Only)\combined_images'
+def select_folder():
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    folder_selected = filedialog.askdirectory()
+    return folder_selected
+IMAGE_FOLDER_PATH = select_folder()
 
-IMAGE_FOLDER_PATH = r'C:\Users\willi\Documents\Drexel\Fall Quart 5\MEM 679 - Machine Learning\pokemon_images_subset (Testing Only)\combined_images'
+pn.extension()  # Initializing Panel extension
 
 class PokemonDashboard(param.Parameterized):
     shiny_filter = param.ObjectSelector(default='All', objects=['All', 'Shiny', 'Normal'])
