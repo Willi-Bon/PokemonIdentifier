@@ -21,7 +21,7 @@ class PokemonDashboard(param.Parameterized):
         self.image_data = load_images_with_metadata(IMAGE_FOLDER_PATH)
         self.filtered_data = self.image_data.copy()
         self.data_table = pn.widgets.Tabulator(self.filtered_data.drop(columns=['width', 'height', 'mode', 'index']), name='Image Data', sizing_mode='stretch_width', height=400)
-        self.entry_counter = pn.widgets.StaticText(name='Total Entries', value=str(len(self.filtered_data)))
+        self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>")
         self.shiny_plot_pane = pn.pane.Matplotlib()
         self.gender_plot_pane = pn.pane.Matplotlib()
         self.color_plot_pane = pn.pane.Matplotlib()
@@ -40,7 +40,7 @@ class PokemonDashboard(param.Parameterized):
         if self.location_filter != 'All':
             self.filtered_data = self.filtered_data[self.filtered_data['location'] == self.location_filter]
         self.data_table.value = self.filtered_data.drop(columns=['width', 'height', 'mode', 'index'])
-        self.entry_counter.value = str(len(self.filtered_data))
+        self.entry_counter.object = f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>"
 
         # Create a bar plot for the number of "Shiny" and "Normal" Pokémon images
         shiny_counts = self.filtered_data['shiny'].value_counts()
@@ -87,10 +87,10 @@ class PokemonDashboard(param.Parameterized):
                         'name_filter': pn.widgets.TextInput,
                         'location_filter': pn.widgets.Select
                     }),
-                    self.data_table,
+                    self.entry_counter,
                 ),
-                self.entry_counter,
             ),
+            self.data_table,
             self.shiny_plot_pane,
             self.gender_plot_pane,
             self.color_plot_pane
