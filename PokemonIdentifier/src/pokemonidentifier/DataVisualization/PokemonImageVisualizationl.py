@@ -82,7 +82,7 @@ class PokemonDashboard(param.Parameterized):
         if self.location_filter != 'All':
             self.filtered_data = self.filtered_data[self.filtered_data['location'] == self.location_filter]
         self.data_table.value = self.filtered_data
-        self.entry_counter.object = f"<div style='font-size: 32px; font-weight: bold;'>Total Entries: {len(self.filtered_data)}</div>"
+        self.entry_counter.object = f"<div style='font-size: 32px; font-weight: bold;'>Total Entries Displayed: {len(self.filtered_data)}</div>"
 
     def update_image_gallery(self, event):
         self.image_gallery.clear()  # Clear the current gallery
@@ -93,7 +93,17 @@ class PokemonDashboard(param.Parameterized):
         self.image_gallery.extend(images)
 
     def view(self):
+        header = pn.pane.HTML(
+            """
+            <div style='background-color: maroon; color: white; padding: 10px; text-align: center; width: 100%;'>
+                <h1>Pokémon Image Visualization Dashboard</h1>
+                <p>This dashboard allows you to filter and visualize Pokémon images based on various criteria.</p>
+            </div>
+            """,
+            sizing_mode='stretch_width'
+        )
         return pn.Column(
+            header,
             pn.Row(
                 pn.Column(
                     pn.Param(self.param, widgets={
