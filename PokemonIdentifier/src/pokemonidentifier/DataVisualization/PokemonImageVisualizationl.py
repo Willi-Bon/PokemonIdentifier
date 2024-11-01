@@ -37,7 +37,7 @@ class PokemonDashboard(param.Parameterized):
         self.image_gallery = pn.Row()  # Pane to display the images in a row
         self.shiny_plot_pane = pn.pane.Matplotlib()
         self.gender_plot_pane = pn.pane.Matplotlib()
-        self.color_plot_pane = pn.pane.Matplotlib()
+        self.scatter_plot_pane = pn.pane.Matplotlib()
         self.param.location_filter.objects = ['All'] + sorted(self.image_data['location'].unique().tolist())
         self.create_static_graphs()
         self.update_dashboard()
@@ -59,7 +59,7 @@ class PokemonDashboard(param.Parameterized):
                 image_data.append(image_info)  # Append the combined data to the list
             self.progress.value = int((idx + 1) / total_files * 100)  # Update progress bar
         df = pd.DataFrame(image_data)  # Convert the list to a pandas DataFrame
-        df = df[['filename', 'name', 'location', 'shiny', 'gender', 'average_color']]  # Reorder columns
+        df = df[['filename', 'name', 'location', 'shiny', 'gender', 'average_color', 'width', 'height', 'mean_pixel_value']]  # Reorder columns
         return df
 
     def create_static_graphs(self):
@@ -85,18 +85,17 @@ class PokemonDashboard(param.Parameterized):
         ax2.grid(True, axis='y')  # Add horizontal gridlines only
         self.gender_plot_pane.object = fig2  # Update the plot
 
-        # Create a histogram for the average color intensity of each image
-        mean_colors = [np.mean(row['average_color']) for _, row in self.image_data.iterrows()]
+        # Create a scatter plot for the average color intensity and area of each image
         fig3, ax3 = plt.subplots()
-        n, bins, patches = ax3.hist(mean_colors, bins=30, edgecolor='black')
-        for patch, row in zip(patches, self.image_data.iterrows()):
-            normalized_color = [c / 255.0 for c in row[1]['average_color']]
-            patch.set_facecolor(normalized_color)
-        ax3.set_title('Histogram of Average Color Intensity of Pokémon Images')
-        ax3.set_xlabel('Mean Color Intensity')
-        ax3.set_ylabel('Frequency')
-        ax3.grid(True, axis='y')  # Add horizontal gridlines only
-        self.color_plot_pane.object = fig3  # Update the plot
+        for _, row in self.image_data.iterrows():
+            mean_pixel_value = row['mean_pixel_value']
+            area = row['width'] * row['height']
+            ax3.scatter(mean_pixel_value, area, color=[c / 255.0 for c in row['average_color']], s=100)
+        ax3.set_title('Scatter Plot of Average Color Intensity and Area of Pokémon Images')
+        ax3.set_xlabel('Average Color Intensity')
+        ax3.set_ylabel('Area (Pixels Squared)')
+        ax3.grid(True, axis='both')  # Add gridlines
+        self.scatter_plot_pane.object = fig3  # Update the plot
 
     @param.depends('shiny_filter', 'gender_filter', 'name_filter', 'location_filter', watch=True)
     def update_dashboard(self):
@@ -128,7 +127,8 @@ class PokemonDashboard(param.Parameterized):
             """
             <div style='background-color: maroon; color: white; padding: 10px; text-align: center; width: 100%;'>
                 <h1>Pokémon Image Visualization Dashboard</h1>
-                <p>This dashboard allows you to filter and visualize Pokémon images based on various criteria.</p>
+                <p>This dashboard facilitates the visualization of the Pokemon Go Pokemon Identifier dataset. It shows statistics of the different classifiers of each image in the dataset.
+                This dashboard also allows the visualization of images that meet user-inputted criterion.</p>
             </div>
             """,
             sizing_mode='stretch_width'
@@ -154,12 +154,12 @@ class PokemonDashboard(param.Parameterized):
             width=300
         )
         
-        color_description = pn.pane.Markdown(
+        scatter_description = pn.pane.Markdown(
             """
-            **Histogram of Average Color Intensity of Pokémon Images**: 
-            This histogram represents the distribution of average color intensity across all Pokémon images. Bars on the histogram represent the average color of the image.\n 
-            Average color intensity was taken by averaging the RGB values of each pixel in the image.\n
-            It is expected that three groupings appear reflecting the three distinct backgrounds used in the dataset. This is becuase the backgrounds dominate the images with the Pokemon featured being only a small proportion of the image.
+            **Average Color Intensity and Area of Pokémon Images**: 
+            This scatter plot represents the average color intensity and area of each dataset image. Each point is colored based on the average color of the corresponding image.
+            The x-axis represents the average color intensity (average of the average RGB values of the dataset image), and the y-axis represents the area (width * height) of the image.\n
+            It is expected that there will be 3 clusters because there are 3 backgrounds in the dataset. Since the backgrounds make-up most of the image the average color intensity will be dominated by the backgrounds.
             """,
             width=300
         )
@@ -167,7 +167,8 @@ class PokemonDashboard(param.Parameterized):
         filter_description = pn.pane.Markdown(
             """
             **Filter Options**: 
-            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.\n
+            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.
+            (Note that location is essentially the background of the image. It represents where the Pokemon Go AR image would be taken in the real world)\n
             **Total Entries Displayed**: 
             Shows the number of images in dataset based on filter preferences.\n
             **Preview Images**:
@@ -190,8 +191,8 @@ class PokemonDashboard(param.Parameterized):
                 gender_description
             ),
             pn.Row(
-                self.color_plot_pane,
-                color_description
+                self.scatter_plot_pane,
+                scatter_description
             ),
             pn.Row(
                 pn.Column(
