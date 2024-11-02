@@ -198,11 +198,18 @@ class PokemonDashboard(param.Parameterized):
         
         instructions = pn.pane.Markdown(
             """
-            ## How to Use This Dashboard
-            - **Filter Options**: Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.
-            - **Total Entries Displayed**: Shows the number of images in the dataset based on filter preferences.
-            - **Preview Images**: Displays all images that currently meet filter preferences. (Not recommended when a large number of entries are displayed)
-            - **Graphs**: Visualize the distribution of Pokémon images based on various criteria.
+            ## Welcome!
+            \nThis dashboard visualizes the dataset that will be used to train a machine learning model to predict what Pokemon is in an image from Pokemon Go.
+            The dataset was created by scraping png images from https://pokemon.gameinfo.io/ and overlaying them onto different backgrounds.
+            This manufactures the types of pictures that are taken in the AR feature of Pokemon Go, where players take pictures of there Pokemon in the real world.
+            Each image in the dataset contains a Pokemon superimposed on a background, the name of the Pokemon, whether it is "Shiny" or "Normal" (Shiny Pokemon are rarer variants of Pokemon), and if the featured Pokemon is a Male or Female variant of the Pokemon species.
+            \nFeatured in this dashboard are the following visualizations:
+            -How many "Shiny" and "Normal" Pokemon images are in the dataset.
+            -How many Pokemon have different Male or Female appearances
+            -What average color intensity are in the images
+            \nAdditionally, a table is provided to allow more fine-tuned examination of images in the dataset.
+            Based on inputted filters, a table will display data based on images that meet given criteria.
+            Then, all images that meet inputted criterion will have the option to be displayed. 
             """,
             width=800
         )
@@ -212,7 +219,7 @@ class PokemonDashboard(param.Parameterized):
             **Number of Shiny and Normal Pokémon Images**: 
             This bar plot shows the count of shiny and normal Pokémon images. \n
             Pokemon appearance changes whether or not it is "Shiny" or "Normal".\n 
-            It is expected that there are an equal number of "Shiny" and "Normal" Pokémon images.
+            It is expected that there are roughly the same number of "Shiny" and "Normal" Pokémon images.
             """,
             width=300
         )
@@ -230,8 +237,11 @@ class PokemonDashboard(param.Parameterized):
         scatter_description = pn.pane.Markdown(
             """
             **Scatter Plot of Average Color Intensity and Area of Pokémon Images**: 
-            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n 
-            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.
+            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n
+            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.\n
+            Average color intensity is calculated by taking the mean value of the pixels in the image.\n 
+            It is expected that the points will be in three groups because the colors of the images are dominated by the colors of the backgrounds. This is due to the Pokemon only taking up the bottom third of the image, causing the mean color to be dominated by the backgrounds. 
+            Additionally, since the three backgrounds are of different sizes, the area of the image will correspond to the different colors of the backgrounds.
             """,
             width=300
         )
@@ -239,13 +249,22 @@ class PokemonDashboard(param.Parameterized):
         filter_description = pn.pane.Markdown(
             """
             **Filter Options**: 
-            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.\n
+            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location (background).\n
             **Total Entries Displayed**: 
             Shows the number of images in dataset based on filter preferences.\n
             **Preview Images**:
             Displays all images that are currently meet filter prefences. 
-            (Not recommended when large number of entries are displayed)
-            
+            (**Not recommended when large number of entries are displayed**)\n
+            **Displayed Information**:
+            Table below will display the following information for each image:
+            -Filename
+            -Name of Pokemon
+            Background of Image
+            -If Shiny or Normal variant featured in image
+            -If Gender specific variant featured in image
+            -Average Color of Image (R, G, B, Opacity)
+            -Width and Height of Image (in pixels)
+            -Mean_Pixel_Value (Average Color Intensity of Image)            
             """,
             width=300
         )

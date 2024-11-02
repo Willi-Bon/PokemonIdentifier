@@ -6,21 +6,14 @@ This is the documentation of **PokemonIdentifier**.
 
 .. note::
 
-    This is the main page of your project's `Sphinx`_ documentation.
-    It is formatted in `reStructuredText`_. Add additional pages
-    by creating rst-files in ``docs`` and adding them to the `toctree`_ below.
-    Use then `references`_ in order to link them from this page, e.g.
-    :ref:`authors` and :ref:`changes`.
-
-    It is also possible to refer to the documentation of other Python packages
-    with the `Python domain syntax`_. By default you can reference the
-    documentation of `Sphinx`_, `Python`_, `NumPy`_, `SciPy`_, `matplotlib`_,
-    `Pandas`_, `Scikit-Learn`_. You can add more by extending the
-    ``intersphinx_mapping`` in your Sphinx's ``conf.py``.
-
-    The pretty useful extension `autodoc`_ is activated by default and lets
-    you include documentation from docstrings. Docstrings can be written in
-    `Google style`_ (recommended!), `NumPy style`_ and `classical style`_.
+    Welcome to my PokemonIdentifier. This is my project for Drexel's MEM 679.
+    In this project, a Machine Learning module will be created to identify images of Pokemon taken
+    in Pokemon Go. 
+    This project contains a webscraper used to gather images of Pokemon from the internet, a script to 
+    overlay those images onto a new background (simulating the Pokemon Go AR experience), and a 
+    Dashboard to visualize this dataset.
+    At the completion of this project, a Machine Learning model will also be include. This model will be
+    able to accept images of Pokemon taken in Pokemon Go and identify the Pokemon in the image.
 
 
 Contents
@@ -29,20 +22,11 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Overview <readme>
-   Contributions & Help <contributing>
+   Module Reference <api/modules>
    License <license>
    Authors <authors>
-   Changelog <changelog>
-   Module Reference <api/modules>
 
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
