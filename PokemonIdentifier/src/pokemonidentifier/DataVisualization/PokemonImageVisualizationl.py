@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
+import random
 
 import panel as pn  # Importing the Panel library for creating interactive dashboards
 import pandas as pd  # Importing pandas for data manipulation and analysis
@@ -17,7 +18,15 @@ def select_folder():
     root.withdraw()  # Hide the root window
     folder_selected = filedialog.askdirectory()
     return folder_selected
+
+def prompt_subset_choice():
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    choice = messagebox.askyesno("Subset Choice", "Do you want to use a random subset of 500 images?\n(Selecting 'No' will load all images in the dataset)")
+    return choice
+
 IMAGE_FOLDER_PATH = select_folder()
+USE_SUBSET = prompt_subset_choice()
 
 pn.extension()  # Initializing Panel extension
 
@@ -30,7 +39,7 @@ class PokemonDashboard(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
         self.progress = pn.widgets.Progress(name='Initializing Dashboard', value=0, max=100, sizing_mode='stretch_width')
-        self.image_data = self.load_images_with_metadata(IMAGE_FOLDER_PATH)
+        self.image_data = self.load_images_with_metadata(IMAGE_FOLDER_PATH, USE_SUBSET)
         self.filtered_data = self.image_data.copy()
         self.data_table = pn.widgets.Tabulator(self.filtered_data, name='Image Data', sizing_mode='stretch_width', height=400)
         self.entry_counter = pn.pane.Markdown(f"<div style='font-size: 32px; font-weight: bold;'>Total Displayed Entries: {len(self.filtered_data)}</div>")
@@ -46,9 +55,11 @@ class PokemonDashboard(param.Parameterized):
         # Add a callback to update the image gallery when the button is pressed
         self.preview_button.on_click(self.update_image_gallery)
 
-    def load_images_with_metadata(self, folder_path):
+    def load_images_with_metadata(self, folder_path, use_subset):
         image_data = []  # Initialize an empty list to store image data
         files = os.listdir(folder_path)
+        if use_subset:
+            files = random.sample(files, min(500, len(files)))  # Select a random subset of 500 images
         total_files = len(files)
         for idx, file_name in enumerate(tqdm(files, desc="Loading Images")):  # Iterate over all files in the folder
             if file_name.endswith('.png'):  # Check if the file is a PNG image
@@ -264,13 +275,14 @@ def get_image_data(image_path):
     with Image.open(image_path) as img:  # Open the image file
         img_array = np.array(img)  # Convert the image to a numpy array
         average_color = tuple(np.mean(img_array, axis=(0, 1)).astype(int))  # Calculate the average color
+        mean_pixel_value = np.mean(img_array)  # Calculate the mean pixel value
         
         return {
             'filename': os.path.basename(image_path),
             'width': img.width,
             'height': img.height,
             'mode': img.mode,
-            'mean_pixel_value': np.mean(img_array),
+            'mean_pixel_value': mean_pixel_value,
             'average_color': average_color
         }
 
