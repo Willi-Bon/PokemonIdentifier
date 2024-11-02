@@ -3,7 +3,7 @@ Below features updates based on the most recent homework submission and a genera
 
 
 
-/n**Homework 3**
+**Homework 3**
 Homework 3 visualizes the dataset that will be used. This uses a dashboard that has a graph depicting the number of Shiny or Normal Pokemon Images, the number of Pokemon images that depend on the Pokemon's gender, and a graph depicting the relationship between image size and average color intensity.
 Additionally, the dashboard has an interactive table which allows filtering of dataset images based on different parameters. Based on inputted parameters, different previews of the images can be outputted.
 To use this:
