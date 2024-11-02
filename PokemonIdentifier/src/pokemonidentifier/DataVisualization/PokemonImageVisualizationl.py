@@ -9,6 +9,7 @@ import numpy as np  # Importing numpy for numerical operations
 import matplotlib.pyplot as plt  # Importing matplotlib for plotting
 import param  # Importing param for creating interactive widgets
 from tqdm import tqdm  # Importing tqdm for progress bar
+from matplotlib.ticker import MaxNLocator  # Importing MaxNLocator for integer y-axis
 
 # IMAGE_FOLDER_PATH = r'C:\Users\willi\Documents\Drexel\Fall Quart 5\MEM 679 - Machine Learning\pokemon_images_subset (Testing Only)\combined_images'
 def select_folder():
@@ -82,6 +83,7 @@ class PokemonDashboard(param.Parameterized):
         ax2.set_xlabel('Gender')
         ax2.set_ylabel('Count')
         ax2.set_xticklabels(gender_counts.index, rotation=0)  # Set text horizontal
+        ax2.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure y-axis shows only integers
         ax2.grid(True, axis='y')  # Add horizontal gridlines only
         self.gender_plot_pane.object = fig2  # Update the plot
 
@@ -93,7 +95,7 @@ class PokemonDashboard(param.Parameterized):
             ax3.scatter(mean_pixel_value, area, color=[c / 255.0 for c in row['average_color']], s=100)
         ax3.set_title('Scatter Plot of Average Color Intensity and Area of Pokémon Images')
         ax3.set_xlabel('Average Color Intensity')
-        ax3.set_ylabel('Area (Pixels Squared)')
+        ax3.set_ylabel('Area (Width x Height)')
         ax3.grid(True, axis='both')  # Add gridlines
         self.scatter_plot_pane.object = fig3  # Update the plot
 
@@ -127,11 +129,28 @@ class PokemonDashboard(param.Parameterized):
             """
             <div style='background-color: maroon; color: white; padding: 10px; text-align: center; width: 100%;'>
                 <h1>Pokémon Image Visualization Dashboard</h1>
-                <p>This dashboard facilitates the visualization of the Pokemon Go Pokemon Identifier dataset. It shows statistics of the different classifiers of each image in the dataset.
-                This dashboard also allows the visualization of images that meet user-inputted criterion.</p>
+                <p>This dashboard allows you to filter and visualize Pokémon images based on various criteria.</p>
             </div>
             """,
             sizing_mode='stretch_width'
+        )
+        
+        instructions = pn.pane.Markdown(
+            """
+            ## Welcome!
+            \nThis dashboard visualizes the dataset that will be used to train a machine learning model to predict what Pokemon is in an image from Pokemon Go.
+            The dataset was created by scraping png images from https://pokemon.gameinfo.io/ and overlaying them onto different backgrounds.
+            This manufactures the types of pictures that are taken in the AR feature of Pokemon Go, where players take pictures of there Pokemon in the real world.
+            Each image in the dataset contains a Pokemon superimposed on a background, the name of the Pokemon, whether it is "Shiny" or "Normal" (Shiny Pokemon are rarer variants of Pokemon), and if the featured Pokemon is a Male or Female variant of the Pokemon species.
+            \nFeatured in this dashboard are the following visualizations:
+            -How many "Shiny" and "Normal" Pokemon images are in the dataset.
+            -How many Pokemon have different Male or Female appearances
+            -What average color intensity are in the images
+            \nAdditionally, a table is provided to allow more fine-tuned examination of images in the dataset.
+            Based on inputted filters, a table will display data based on images that meet given criteria.
+            Then, all images that meet inputted criterion will have the option to be displayed. 
+            """,
+            width=800
         )
         
         shiny_description = pn.pane.Markdown(
@@ -139,7 +158,7 @@ class PokemonDashboard(param.Parameterized):
             **Number of Shiny and Normal Pokémon Images**: 
             This bar plot shows the count of shiny and normal Pokémon images. \n
             Pokemon appearance changes whether or not it is "Shiny" or "Normal".\n 
-            It is expected that there are an equal number of "Shiny" and "Normal" Pokémon images.
+            It is expected that there are roughly the same number of "Shiny" and "Normal" Pokémon images.
             """,
             width=300
         )
@@ -156,10 +175,12 @@ class PokemonDashboard(param.Parameterized):
         
         scatter_description = pn.pane.Markdown(
             """
-            **Average Color Intensity and Area of Pokémon Images**: 
-            This scatter plot represents the average color intensity and area of each dataset image. Each point is colored based on the average color of the corresponding image.
-            The x-axis represents the average color intensity (average of the average RGB values of the dataset image), and the y-axis represents the area (width * height) of the image.\n
-            It is expected that there will be 3 clusters because there are 3 backgrounds in the dataset. Since the backgrounds make-up most of the image the average color intensity will be dominated by the backgrounds.
+            **Scatter Plot of Average Color Intensity and Area of Pokémon Images**: 
+            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n
+            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.\n
+            Average color intensity is calculated by taking the mean value of the pixels in the image.\n 
+            It is expected that the points will be in three groups because the colors of the images are dominated by the colors of the backgrounds. This is due to the Pokemon only taking up the bottom third of the image, causing the mean color to be dominated by the backgrounds. 
+            Additionally, since the three backgrounds are of different sizes, the area of the image will correspond to the different colors of the backgrounds.
             """,
             width=300
         )
@@ -167,13 +188,22 @@ class PokemonDashboard(param.Parameterized):
         filter_description = pn.pane.Markdown(
             """
             **Filter Options**: 
-            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.
-            (Note that location is essentially the background of the image. It represents where the Pokemon Go AR image would be taken in the real world)\n
+            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location (background).\n
             **Total Entries Displayed**: 
             Shows the number of images in dataset based on filter preferences.\n
             **Preview Images**:
             Displays all images that are currently meet filter prefences. 
-            (Not recommended when large number of entries are displayed)
+            (**Not recommended when large number of entries are displayed**)\n
+            **Displayed Information**:
+            Table below will display the following information for each image:
+            -Filename
+            -Name of Pokemon
+            Background of Image
+            -If Shiny or Normal variant featured in image
+            -If Gender specific variant featured in image
+            -Average Color of Image (R, G, B, Opacity)
+            -Width and Height of Image (in pixels)
+            -Mean_Pixel_Value (Average Color Intensity of Image)
             
             """,
             width=300
@@ -181,6 +211,7 @@ class PokemonDashboard(param.Parameterized):
         
         return pn.Column(
             header,
+            instructions,
             self.progress,
             pn.Row(
                 self.shiny_plot_pane,
