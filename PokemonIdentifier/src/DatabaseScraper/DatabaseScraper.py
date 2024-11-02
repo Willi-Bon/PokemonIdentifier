@@ -25,53 +25,63 @@ url = 'https://pokemon.gameinfo.io/'
 driver.get(url)
 
 # Extract page content with BeautifulSoup
-soup = BeautifulSoup(driver.page_source, "html.parser") #Extracts homepage
+page_content = driver.page_source
+soup = BeautifulSoup(page_content, 'html.parser')
 
-# Find all Pokémon links and extract data
-pokemon_links = soup.find_all('a', class_='pokemon')
-count = 0   #Begins a count that will be used to check which value pokemon code is on (useful to restart code if it crashes)
-os.makedirs('pokemon_images', exist_ok=True)
-for pokemon_link in pokemon_links:
-    if count > 400: #If code crashes, start at last saved image.
-                    #If first pass, set to -1
-        #Get url to specific pokemon
-        pokemon_url = pokemon_link['href']
-        full_url = f"https://pokemon.gameinfo.io{pokemon_url}"
-        
+def scrape_pokemon_data():
+    """
+    Scrapes Pokémon data from the specified URL.
 
-        # Navigate to the Pokémon's page
-        driver.get(full_url)
-        driver.implicitly_wait(60) #Driver waits a minute for page to load
-        # Give the page time to load always
-        time.sleep(2)
+    This function uses Selenium to navigate to the Pokémon GameInfo website,
+    extracts the page content using BeautifulSoup, and processes the data.
 
-        # Extract data from the Pokémon's page
-        pokemon_soup = BeautifulSoup(driver.page_source, "html.parser")
-        # Example of extracting specific information, adjust selectors as necessary
-        article = pokemon_soup.find('article', class_='images-block') #Relevant images are in this article
-        if article: 
-            images = article.find_all('img') #Pulls all images from article
-            image_urls = [img['src'] for img in images] #Stors image url & Image name
-            image_names = [img['alt'] for img in images]
-            for i, img_url in enumerate(image_urls): #Saves each image in article (Male/Female & Normal/Shiny)
-                response = requests.get(f'https:{img_url}')
-                if response.status_code == 200:
-                    # Save the image to the local directory
-                    with open(f'pokemon_images/{image_names[i]}.png', 'wb') as f:
-                        f.write(response.content)
-                    print(f"Saved image for {image_names[i]}")
-                    print(f'count: {count}') #Prints count to keep track in case of time-out error
-                else:
-                    print(f"Failed to download image for {image_names[i]}")
+    Returns:
+        list: A list of dictionaries containing Pokémon data.
+    """
+    # List to store Pokémon data
+    pokemon_data = []
 
-        else:
-            print("Article with class 'images-block' not found.")
-        driver.back()  # Go back to the main Pokémon page
-        time.sleep(2)
+    # Find all Pokémon entries on the page
+    pokemon_entries = soup.find_all('div', class_='pokemon-entry')
 
-    count += 1 #Increments count by 1
+    for entry in pokemon_entries:
+        # Extract Pokémon name
+        name = entry.find('h3').text.strip()
 
-print(f'Total Pokémon processed: {count}') #Prints total number of Pokémon processed
+        # Extract Pokémon type(s)
+        types = [type_tag.text.strip() for type_tag in entry.find_all('span', class_='type')]
 
-# Close the browser
-driver.quit()
+        # Extract Pokémon image URL
+        image_url = entry.find('img')['src']
+
+        # Append data to the list
+        pokemon_data.append({
+            'name': name,
+            'types': types,
+            'image_url': image_url
+        })
+
+    return pokemon_data
+
+def save_pokemon_data(data, filename='pokemon_data.json'):
+    """
+    Saves Pokémon data to a JSON file.
+
+    Args:
+        data (list): A list of dictionaries containing Pokémon data.
+        filename (str): The name of the file to save the data to.
+    """
+    import json
+
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=4)
+
+if __name__ == "__main__":
+    # Scrape Pokémon data
+    data = scrape_pokemon_data()
+
+    # Save the data to a JSON file
+    save_pokemon_data(data)
+
+    # Close the browser
+    driver.quit()

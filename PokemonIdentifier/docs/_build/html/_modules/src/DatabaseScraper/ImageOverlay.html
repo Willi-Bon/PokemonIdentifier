@@ -40,12 +40,9 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
 </ul>
 
         </div>
@@ -81,7 +78,17 @@
 
 <div class="viewcode-block" id="overlay_images">
 <a class="viewcode-back" href="../../../api/src.DatabaseScraper.html#src.DatabaseScraper.ImageOverlay.overlay_images">[docs]</a>
-<span class="k">def</span> <span class="nf">overlay_images</span><span class="p">(</span><span class="n">background_path</span><span class="p">,</span> <span class="n">overlay_path</span><span class="p">):</span> <span class="c1">#Function to Overlay two images</span>
+<span class="k">def</span> <span class="nf">overlay_images</span><span class="p">(</span><span class="n">background_path</span><span class="p">,</span> <span class="n">overlay_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overlays two images with the overlay image resized and centered on the background image.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        background_path (str): The file path to the background image.</span>
+<span class="sd">        overlay_path (str): The file path to the overlay image.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Image: The resulting image with the overlay applied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the background and overlay images</span>
     <span class="n">background</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">background_path</span><span class="p">)</span>
     <span class="n">overlay</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">overlay_path</span><span class="p">)</span>
@@ -104,6 +111,7 @@
     <span class="c1"># Create a blank canvas the size of the background and paste the resized overlay onto it</span>
     <span class="n">overlay_canvas</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="n">background</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
     <span class="n">overlay_canvas</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">overlay_resized</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">overlay_resized</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">overlay_canvas</span></div>
 
 

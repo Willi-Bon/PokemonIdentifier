@@ -40,12 +40,9 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
 </ul>
 
         </div>
@@ -125,10 +122,10 @@
 <span class="sd">    A dashboard for visualizing Pokémon images.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        shiny_filter (param.ObjectSelector): Filter for shiny status.</span>
-<span class="sd">        gender_filter (param.ObjectSelector): Filter for gender.</span>
+<span class="sd">        shiny_filter (param.ObjectSelector): Filter for shiny status (Either Normal or Shiny).</span>
+<span class="sd">        gender_filter (param.ObjectSelector): Filter for gender variants of Pokemon.</span>
 <span class="sd">        name_filter (param.String): Filter for Pokémon name.</span>
-<span class="sd">        location_filter (param.ObjectSelector): Filter for location.</span>
+<span class="sd">        location_filter (param.ObjectSelector): Filter for location (Background used in Dataset).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">shiny_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Shiny&#39;</span><span class="p">,</span> <span class="s1">&#39;Normal&#39;</span><span class="p">])</span>
     <span class="n">gender_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Male &amp; Female&#39;</span><span class="p">,</span> <span class="s1">&#39;Male&#39;</span><span class="p">,</span> <span class="s1">&#39;Female&#39;</span><span class="p">])</span>
@@ -168,7 +165,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            folder_path (str): The path to the folder containing the images.</span>
-<span class="sd">            use_subset (bool): Whether to use a random subset of 500 images.</span>
+<span class="sd">            use_subset (bool): Whether to use a random subset of 500 images or full dataset.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            pd.DataFrame: A DataFrame containing the image metadata.</span>
@@ -292,11 +289,18 @@
         
         <span class="n">instructions</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            ## How to Use This Dashboard</span>
-<span class="sd">            - **Filter Options**: Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.</span>
-<span class="sd">            - **Total Entries Displayed**: Shows the number of images in the dataset based on filter preferences.</span>
-<span class="sd">            - **Preview Images**: Displays all images that currently meet filter preferences. (Not recommended when a large number of entries are displayed)</span>
-<span class="sd">            - **Graphs**: Visualize the distribution of Pokémon images based on various criteria.</span>
+<span class="sd">            ## Welcome!</span>
+<span class="sd">            \nThis dashboard visualizes the dataset that will be used to train a machine learning model to predict what Pokemon is in an image from Pokemon Go.</span>
+<span class="sd">            The dataset was created by scraping png images from https://pokemon.gameinfo.io/ and overlaying them onto different backgrounds.</span>
+<span class="sd">            This manufactures the types of pictures that are taken in the AR feature of Pokemon Go, where players take pictures of there Pokemon in the real world.</span>
+<span class="sd">            Each image in the dataset contains a Pokemon superimposed on a background, the name of the Pokemon, whether it is &quot;Shiny&quot; or &quot;Normal&quot; (Shiny Pokemon are rarer variants of Pokemon), and if the featured Pokemon is a Male or Female variant of the Pokemon species.</span>
+<span class="sd">            \nFeatured in this dashboard are the following visualizations:</span>
+<span class="sd">            -How many &quot;Shiny&quot; and &quot;Normal&quot; Pokemon images are in the dataset.</span>
+<span class="sd">            -How many Pokemon have different Male or Female appearances</span>
+<span class="sd">            -What average color intensity are in the images</span>
+<span class="sd">            \nAdditionally, a table is provided to allow more fine-tuned examination of images in the dataset.</span>
+<span class="sd">            Based on inputted filters, a table will display data based on images that meet given criteria.</span>
+<span class="sd">            Then, all images that meet inputted criterion will have the option to be displayed. </span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="mi">800</span>
         <span class="p">)</span>
@@ -306,7 +310,7 @@
 <span class="sd">            **Number of Shiny and Normal Pokémon Images**: </span>
 <span class="sd">            This bar plot shows the count of shiny and normal Pokémon images. \n</span>
 <span class="sd">            Pokemon appearance changes whether or not it is &quot;Shiny&quot; or &quot;Normal&quot;.\n </span>
-<span class="sd">            It is expected that there are an equal number of &quot;Shiny&quot; and &quot;Normal&quot; Pokémon images.</span>
+<span class="sd">            It is expected that there are roughly the same number of &quot;Shiny&quot; and &quot;Normal&quot; Pokémon images.</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
         <span class="p">)</span>
@@ -324,8 +328,11 @@
         <span class="n">scatter_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            **Scatter Plot of Average Color Intensity and Area of Pokémon Images**: </span>
-<span class="sd">            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n </span>
-<span class="sd">            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.</span>
+<span class="sd">            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n</span>
+<span class="sd">            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.\n</span>
+<span class="sd">            Average color intensity is calculated by taking the mean value of the pixels in the image.\n </span>
+<span class="sd">            It is expected that the points will be in three groups because the colors of the images are dominated by the colors of the backgrounds. This is due to the Pokemon only taking up the bottom third of the image, causing the mean color to be dominated by the backgrounds. </span>
+<span class="sd">            Additionally, since the three backgrounds are of different sizes, the area of the image will correspond to the different colors of the backgrounds.</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
         <span class="p">)</span>
@@ -333,13 +340,22 @@
         <span class="n">filter_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            **Filter Options**: </span>
-<span class="sd">            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.\n</span>
+<span class="sd">            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location (background).\n</span>
 <span class="sd">            **Total Entries Displayed**: </span>
 <span class="sd">            Shows the number of images in dataset based on filter preferences.\n</span>
 <span class="sd">            **Preview Images**:</span>
 <span class="sd">            Displays all images that are currently meet filter prefences. </span>
-<span class="sd">            (Not recommended when large number of entries are displayed)</span>
-<span class="sd">            </span>
+<span class="sd">            (**Not recommended when large number of entries are displayed**)\n</span>
+<span class="sd">            **Displayed Information**:</span>
+<span class="sd">            Table below will display the following information for each image:</span>
+<span class="sd">            -Filename</span>
+<span class="sd">            -Name of Pokemon</span>
+<span class="sd">            Background of Image</span>
+<span class="sd">            -If Shiny or Normal variant featured in image</span>
+<span class="sd">            -If Gender specific variant featured in image</span>
+<span class="sd">            -Average Color of Image (R, G, B, Opacity)</span>
+<span class="sd">            -Width and Height of Image (in pixels)</span>
+<span class="sd">            -Mean_Pixel_Value (Average Color Intensity of Image)            </span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
         <span class="p">)</span>

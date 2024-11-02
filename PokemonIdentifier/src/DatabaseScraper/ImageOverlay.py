@@ -4,7 +4,17 @@ import sys
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 
-def overlay_images(background_path, overlay_path): #Function to Overlay two images
+def overlay_images(background_path, overlay_path):
+    """
+    Overlays two images with the overlay image resized and centered on the background image.
+
+    Args:
+        background_path (str): The file path to the background image.
+        overlay_path (str): The file path to the overlay image.
+
+    Returns:
+        Image: The resulting image with the overlay applied.
+    """
     # Load the background and overlay images
     background = Image.open(background_path)
     overlay = Image.open(overlay_path)
@@ -27,6 +37,7 @@ def overlay_images(background_path, overlay_path): #Function to Overlay two imag
     # Create a blank canvas the size of the background and paste the resized overlay onto it
     overlay_canvas = Image.new("RGBA", background.size)
     overlay_canvas.paste(overlay_resized, (x, y), overlay_resized)
+
     return overlay_canvas
 
 if __name__ == "__main__":

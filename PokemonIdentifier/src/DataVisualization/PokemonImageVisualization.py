@@ -42,10 +42,10 @@ class PokemonDashboard(param.Parameterized):
     A dashboard for visualizing Pokémon images.
 
     Attributes:
-        shiny_filter (param.ObjectSelector): Filter for shiny status.
-        gender_filter (param.ObjectSelector): Filter for gender.
+        shiny_filter (param.ObjectSelector): Filter for shiny status (Either Normal or Shiny).
+        gender_filter (param.ObjectSelector): Filter for gender variants of Pokemon.
         name_filter (param.String): Filter for Pokémon name.
-        location_filter (param.ObjectSelector): Filter for location.
+        location_filter (param.ObjectSelector): Filter for location (Background used in Dataset).
     """
     shiny_filter = param.ObjectSelector(default='All', objects=['All', 'Shiny', 'Normal'])
     gender_filter = param.ObjectSelector(default='All', objects=['All', 'Male & Female', 'Male', 'Female'])
@@ -83,7 +83,7 @@ class PokemonDashboard(param.Parameterized):
 
         Args:
             folder_path (str): The path to the folder containing the images.
-            use_subset (bool): Whether to use a random subset of 500 images.
+            use_subset (bool): Whether to use a random subset of 500 images or full dataset.
 
         Returns:
             pd.DataFrame: A DataFrame containing the image metadata.

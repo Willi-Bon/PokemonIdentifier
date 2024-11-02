@@ -4,11 +4,29 @@ import tkinter as tk
 from tkinter import filedialog
 
 def extract_name(filename):
+    """
+    Extracts the name from a filename.
+
+    Args:
+        filename (str): The filename to extract the name from.
+
+    Returns:
+        str: The extracted name.
+    """
     # Split the filename by spaces and take the first part as the name
     name = filename.split(' ')[0]
     return name
 
 def get_unique_names_from_png_files(folder_path):
+    """
+    Gets unique names from PNG files in a specified folder.
+
+    Args:
+        folder_path (str): The path to the folder containing PNG files.
+
+    Returns:
+        set: A set of unique names extracted from the PNG filenames.
+    """
     # Initialize an empty set to store unique names
     unique_names = set()
     
@@ -25,32 +43,29 @@ def get_unique_names_from_png_files(folder_path):
     return unique_names
 
 def save_names_to_csv(names, output_csv_path):
-    # Open the output CSV file in write mode with utf-8 encoding
-    with open(output_csv_path, mode='w', newline='', encoding='utf-8') as file:
-        # Create a CSV writer object
+    """
+    Saves a set of names to a CSV file.
+
+    Args:
+        names (set): A set of names to save.
+        output_csv_path (str): The path to the output CSV file.
+    """
+    # Open the CSV file for writing
+    with open(output_csv_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        # Write the names to the CSV file
+        # Write each name to a new row in the CSV file
         for name in names:
             writer.writerow([name])
-            print(name)
 
 if __name__ == "__main__":
-    # Define the folder path containing the .png files
-    # Create a Tkinter root window (it won't be shown)
+    # Code that should not run during Sphinx documentation build
     root = tk.Tk()
-    root.withdraw()
-
-    # Open a file dialog to select a folder
+    root.withdraw()  # Hide the root window
     folder_path = filedialog.askdirectory(title="Select Folder Containing PNG Files")
-    # Define the output CSV file path
-    # Open a file dialog to select a folder to save the CSV file
-    output_folder_path = filedialog.askdirectory(title="Select Folder to Save CSV File")
-    # Define the output CSV file path
-    output_csv_path = os.path.join(output_folder_path, 'MasterNames.csv')
+    output_csv_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")], title="Save CSV File As")
     
-    # Get the unique names from the .png files in the specified folder
+    # Get unique names from PNG files
     unique_names = get_unique_names_from_png_files(folder_path)
-    # Save the unique names to the specified CSV file
+    
+    # Save the unique names to a CSV file
     save_names_to_csv(unique_names, output_csv_path)
-
-    print('Operations Complete')
