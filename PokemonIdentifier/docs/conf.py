@@ -10,6 +10,8 @@
 import os
 import sys
 import shutil
+sys.path.insert(0, os.path.abspath('../src'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Path setup --------------------------------------------------------------
 
@@ -34,7 +36,7 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../src/pokemonidentifier")
+module_dir = os.path.join(__location__, "../src")
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:
@@ -53,6 +55,12 @@ try:
     apidoc.main(args)
 except Exception as e:
     print("Running `sphinx-apidoc` failed!\n{}".format(e))
+
+# -- Project information -----------------------------------------------------
+
+project = 'PokemonIdentifier'
+copyright = '2024, Willi-Bon'
+author = 'Willi-Bon'
 
 # -- General configuration ---------------------------------------------------
 
@@ -146,8 +154,12 @@ pygments_style = "sphinx"
 # keep_warnings = False
 
 # If this is True, todo emits a warning for each TODO entries. The default is False.
-todo_emit_warnings = True
+todo_emit_warnings = False
 
+# Mock imports to avoid running code
+autodoc_mock_imports = [
+    'tkinter', 'panel', 'pandas', 'os', 'PIL', 'numpy', 'matplotlib', 'param', 'tqdm', 'selenium', 'bs4', 'requests'
+]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -160,8 +172,9 @@ html_theme='sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "sidebar_width": "300px",
-    "page_width": "1200px"
+    #'sidebar_width': '300px',
+    #'page_width': '1200px',
+
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

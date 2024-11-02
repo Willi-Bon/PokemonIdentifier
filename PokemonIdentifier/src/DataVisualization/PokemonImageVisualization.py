@@ -1,10 +1,11 @@
+import os
+import sys
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, simpledialog, messagebox
 import random
 
 import panel as pn  # Importing the Panel library for creating interactive dashboards
 import pandas as pd  # Importing pandas for data manipulation and analysis
-import os  # Importing os for interacting with the operating system
 from PIL import Image  # Importing the Python Imaging Library for image processing
 import numpy as np  # Importing numpy for numerical operations
 import matplotlib.pyplot as plt  # Importing matplotlib for plotting
@@ -35,14 +36,6 @@ def prompt_subset_choice():
     root.withdraw()  # Hide the root window
     choice = messagebox.askyesno("Subset Choice", "Do you want to use a random subset of 500 images?\n(Selecting 'No' will load all images in the dataset)")
     return choice
-
-# Select the folder containing the images
-IMAGE_FOLDER_PATH = select_folder()
-# Prompt the user to choose between using a random subset or the entire dataset
-USE_SUBSET = prompt_subset_choice()
-
-# Initialize Panel extension
-pn.extension()
 
 class PokemonDashboard(param.Parameterized):
     """
@@ -359,6 +352,15 @@ def parse_filename(filename):
         'gender': gender
     }
 
-# Create and serve the dashboard
-dashboard = PokemonDashboard()
-pn.serve(dashboard.view)
+if __name__ == "__main__":
+    # Select the folder containing the images
+    IMAGE_FOLDER_PATH = select_folder()
+    # Prompt the user to choose between using a random subset or the entire dataset
+    USE_SUBSET = prompt_subset_choice()
+
+    # Initialize Panel extension
+    pn.extension()
+
+    # Create and serve the dashboard
+    dashboard = PokemonDashboard()
+    pn.serve(dashboard.view)
