@@ -1,0 +1,19 @@
+pokemonidentifier package
+=========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pokemonidentifier.DataVisualization
+   pokemonidentifier.DatabaseScraper
+
+Module contents
+---------------
+
+.. automodule:: pokemonidentifier
+   :members:
+   :undoc-members:
+   :show-inheritance:

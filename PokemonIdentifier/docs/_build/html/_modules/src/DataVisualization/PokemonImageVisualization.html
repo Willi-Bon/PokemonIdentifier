@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.DataVisualization.PokemonImageVisualization &mdash; PokemonIdentifier unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PokemonIdentifier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PokemonIdentifier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.DataVisualization.PokemonImageVisualization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.DataVisualization.PokemonImageVisualization</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">simpledialog</span><span class="p">,</span> <span class="n">messagebox</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">panel</span> <span class="k">as</span> <span class="nn">pn</span>  <span class="c1"># Importing the Panel library for creating interactive dashboards</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>  <span class="c1"># Importing pandas for data manipulation and analysis</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>  <span class="c1"># Importing the Python Imaging Library for image processing</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># Importing numpy for numerical operations</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>  <span class="c1"># Importing matplotlib for plotting</span>
+<span class="kn">import</span> <span class="nn">param</span>  <span class="c1"># Importing param for creating interactive widgets</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>  <span class="c1"># Importing tqdm for progress bar</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MaxNLocator</span>  <span class="c1"># Importing MaxNLocator for integer y-axis</span>
+
+<div class="viewcode-block" id="select_folder">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.select_folder">[docs]</a>
+<span class="k">def</span> <span class="nf">select_folder</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens a dialog to select a folder.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The path to the selected folder.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>  <span class="c1"># Hide the root window</span>
+    <span class="n">folder_selected</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">folder_selected</span></div>
+
+
+<div class="viewcode-block" id="prompt_subset_choice">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.prompt_subset_choice">[docs]</a>
+<span class="k">def</span> <span class="nf">prompt_subset_choice</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompts the user to choose between using a random subset of 500 images or the entire dataset.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the user chooses to use a random subset, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>  <span class="c1"># Hide the root window</span>
+    <span class="n">choice</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span><span class="s2">&quot;Subset Choice&quot;</span><span class="p">,</span> <span class="s2">&quot;Do you want to use a random subset of 500 images?</span><span class="se">\n</span><span class="s2">(Selecting &#39;No&#39; will load all images in the dataset)&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">choice</span></div>
+
+
+<div class="viewcode-block" id="PokemonDashboard">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.PokemonDashboard">[docs]</a>
+<span class="k">class</span> <span class="nc">PokemonDashboard</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dashboard for visualizing Pokémon images.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        shiny_filter (param.ObjectSelector): Filter for shiny status.</span>
+<span class="sd">        gender_filter (param.ObjectSelector): Filter for gender.</span>
+<span class="sd">        name_filter (param.String): Filter for Pokémon name.</span>
+<span class="sd">        location_filter (param.ObjectSelector): Filter for location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shiny_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Shiny&#39;</span><span class="p">,</span> <span class="s1">&#39;Normal&#39;</span><span class="p">])</span>
+    <span class="n">gender_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Male &amp; Female&#39;</span><span class="p">,</span> <span class="s1">&#39;Male&#39;</span><span class="p">,</span> <span class="s1">&#39;Female&#39;</span><span class="p">])</span>
+    <span class="n">name_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Filter by name&quot;</span><span class="p">)</span>
+    <span class="n">location_filter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the dashboard.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **params: Additional parameters for the dashboard.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Progress</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Initializing Dashboard&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">sizing_mode</span><span class="o">=</span><span class="s1">&#39;stretch_width&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_images_with_metadata</span><span class="p">(</span><span class="n">IMAGE_FOLDER_PATH</span><span class="p">,</span> <span class="n">USE_SUBSET</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Tabulator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Image Data&#39;</span><span class="p">,</span> <span class="n">sizing_mode</span><span class="o">=</span><span class="s1">&#39;stretch_width&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_counter</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;div style=&#39;font-size: 32px; font-weight: bold;&#39;&gt;Total Displayed Entries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_button</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Preview Images&#39;</span><span class="p">,</span> <span class="n">button_type</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_gallery</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">()</span>  <span class="c1"># Pane to display the images in a row</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shiny_plot_pane</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Matplotlib</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gender_plot_pane</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Matplotlib</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scatter_plot_pane</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Matplotlib</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">location_filter</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_static_graphs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_dashboard</span><span class="p">()</span>
+
+        <span class="c1"># Add a callback to update the image gallery when the button is pressed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_image_gallery</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PokemonDashboard.load_images_with_metadata">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.PokemonDashboard.load_images_with_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_images_with_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">,</span> <span class="n">use_subset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads images and their metadata from the specified folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            folder_path (str): The path to the folder containing the images.</span>
+<span class="sd">            use_subset (bool): Whether to use a random subset of 500 images.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: A DataFrame containing the image metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image_data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Initialize an empty list to store image data</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_subset</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)))</span>  <span class="c1"># Select a random subset of 500 images</span>
+        <span class="n">total_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading Images&quot;</span><span class="p">)):</span>  <span class="c1"># Iterate over all files in the folder</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.png&#39;</span><span class="p">):</span>  <span class="c1"># Check if the file is a PNG image</span>
+                <span class="n">image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>  <span class="c1"># Get the full path of the image</span>
+                <span class="n">image_info</span> <span class="o">=</span> <span class="n">get_image_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>  <span class="c1"># Get the image data</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">parse_filename</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>  <span class="c1"># Parse the filename for metadata</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>  <span class="c1"># Set the index</span>
+                <span class="n">image_info</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>  <span class="c1"># Merge the image data with the metadata</span>
+                <span class="n">image_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_info</span><span class="p">)</span>  <span class="c1"># Append the combined data to the list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_files</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1"># Update progress bar</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>  <span class="c1"># Convert the list to a pandas DataFrame</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;shiny&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;average_color&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;mean_pixel_value&#39;</span><span class="p">]]</span>  <span class="c1"># Reorder columns</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="PokemonDashboard.create_static_graphs">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.PokemonDashboard.create_static_graphs">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_static_graphs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates static graphs for the dashboard.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a bar plot for the number of &quot;Shiny&quot; and &quot;Normal&quot; Pokémon images</span>
+        <span class="n">shiny_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="p">[</span><span class="s1">&#39;shiny&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">shiny_counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Number of Shiny and Normal Pokémon Images&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Shiny Status&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">shiny_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Set text horizontal</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>  <span class="c1"># Add horizontal gridlines only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shiny_plot_pane</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">fig</span>  <span class="c1"># Update the plot</span>
+
+        <span class="c1"># Create a bar plot for the number of &quot;Male &amp; Female&quot;, &quot;Male&quot;, and &quot;Female&quot; Pokémon images</span>
+        <span class="n">gender_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">fig2</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">gender_counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">])</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distinct Pokemon Forms Based on Gender&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Gender&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">gender_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Set text horizontal</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MaxNLocator</span><span class="p">(</span><span class="n">integer</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># Ensure y-axis shows only integers</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>  <span class="c1"># Add horizontal gridlines only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gender_plot_pane</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">fig2</span>  <span class="c1"># Update the plot</span>
+
+        <span class="c1"># Create a scatter plot for the average color intensity and area of each image</span>
+        <span class="n">fig3</span><span class="p">,</span> <span class="n">ax3</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">mean_pixel_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;mean_pixel_value&#39;</span><span class="p">]</span>
+            <span class="n">area</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span>
+            <span class="n">ax3</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">mean_pixel_value</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="o">/</span> <span class="mf">255.0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;average_color&#39;</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Scatter Plot of Average Color Intensity and Area of Pokémon Images&#39;</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Average Color Intensity&#39;</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Area (Width x Height)&#39;</span><span class="p">)</span>
+        <span class="n">ax3</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>  <span class="c1"># Add gridlines</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scatter_plot_pane</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">fig3</span>  <span class="c1"># Update the plot</span></div>
+
+
+    <span class="nd">@param</span><span class="o">.</span><span class="n">depends</span><span class="p">(</span><span class="s1">&#39;shiny_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;gender_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;name_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;location_filter&#39;</span><span class="p">,</span> <span class="n">watch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">update_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the dashboard based on the selected filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shiny_filter</span> <span class="o">!=</span> <span class="s1">&#39;All&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="s1">&#39;shiny&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shiny_filter</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gender_filter</span> <span class="o">!=</span> <span class="s1">&#39;All&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">gender_filter</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_filter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_filter</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location_filter</span> <span class="o">!=</span> <span class="s1">&#39;All&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">location_filter</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry_counter</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;div style=&#39;font-size: 32px; font-weight: bold;&#39;&gt;Total Entries Displayed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span>
+
+<div class="viewcode-block" id="PokemonDashboard.update_image_gallery">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.PokemonDashboard.update_image_gallery">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_image_gallery</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the image gallery based on the filtered data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event: The event that triggered the update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_gallery</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># Clear the current gallery</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">IMAGE_FOLDER_PATH</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">PNG</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">),</span>
+                <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;div style=&#39;text-align: center; margin-top: -10px;&#39;&gt;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+            <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_gallery</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">images</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PokemonDashboard.view">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.PokemonDashboard.view">[docs]</a>
+    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the layout for the dashboard.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pn.Column: The layout of the dashboard.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            &lt;div style=&#39;background-color: maroon; color: white; padding: 10px; text-align: center; width: 100%;&#39;&gt;</span>
+<span class="sd">                &lt;h1&gt;Pokémon Image Visualization Dashboard&lt;/h1&gt;</span>
+<span class="sd">                &lt;p&gt;This dashboard allows you to filter and visualize Pokémon images based on various criteria.&lt;/p&gt;</span>
+<span class="sd">            &lt;/div&gt;</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">sizing_mode</span><span class="o">=</span><span class="s1">&#39;stretch_width&#39;</span>
+        <span class="p">)</span>
+        
+        <span class="n">instructions</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            ## How to Use This Dashboard</span>
+<span class="sd">            - **Filter Options**: Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.</span>
+<span class="sd">            - **Total Entries Displayed**: Shows the number of images in the dataset based on filter preferences.</span>
+<span class="sd">            - **Preview Images**: Displays all images that currently meet filter preferences. (Not recommended when a large number of entries are displayed)</span>
+<span class="sd">            - **Graphs**: Visualize the distribution of Pokémon images based on various criteria.</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">800</span>
+        <span class="p">)</span>
+        
+        <span class="n">shiny_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            **Number of Shiny and Normal Pokémon Images**: </span>
+<span class="sd">            This bar plot shows the count of shiny and normal Pokémon images. \n</span>
+<span class="sd">            Pokemon appearance changes whether or not it is &quot;Shiny&quot; or &quot;Normal&quot;.\n </span>
+<span class="sd">            It is expected that there are an equal number of &quot;Shiny&quot; and &quot;Normal&quot; Pokémon images.</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
+        <span class="p">)</span>
+        
+        <span class="n">gender_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            **Distinct Pokémon Forms Based on Gender**: </span>
+<span class="sd">            This bar plot displays the number of distinct Pokémon Images categorized by gender.\n</span>
+<span class="sd">            Some Pokemon look different if they are Female or Male. Pokemon images that do not differ based on Pokemon gender are labeled as &quot;Male &amp; Female&quot;.\n</span>
+<span class="sd">            It is expected that there are significantly more Pokemon images that do not depend on the featured Pokemon&#39;s gender. Additionally, Pokemon images that feature a Male-exclusive and Female-exclusive counts are expected to be roughly equal.</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
+        <span class="p">)</span>
+        
+        <span class="n">scatter_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            **Scatter Plot of Average Color Intensity and Area of Pokémon Images**: </span>
+<span class="sd">            This scatter plot represents the average color intensity and area of each Pokémon image. Each point is colored based on the average color of the corresponding image.\n </span>
+<span class="sd">            The x-axis represents the average color intensity, and the y-axis represents the area (width times height) of the image.</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
+        <span class="p">)</span>
+        
+        <span class="n">filter_description</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            **Filter Options**: </span>
+<span class="sd">            Use the filters to narrow down the Pokémon images based on shiny status, gender, name, and location.\n</span>
+<span class="sd">            **Total Entries Displayed**: </span>
+<span class="sd">            Shows the number of images in dataset based on filter preferences.\n</span>
+<span class="sd">            **Preview Images**:</span>
+<span class="sd">            Displays all images that are currently meet filter prefences. </span>
+<span class="sd">            (Not recommended when large number of entries are displayed)</span>
+<span class="sd">            </span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
+            <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shiny_plot_pane</span><span class="p">,</span>
+                <span class="n">shiny_description</span>
+            <span class="p">),</span>
+            <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gender_plot_pane</span><span class="p">,</span>
+                <span class="n">gender_description</span>
+            <span class="p">),</span>
+            <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scatter_plot_pane</span><span class="p">,</span>
+                <span class="n">scatter_description</span>
+            <span class="p">),</span>
+            <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+                <span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                    <span class="n">pn</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">,</span> <span class="n">widgets</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s1">&#39;shiny_filter&#39;</span><span class="p">:</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Select</span><span class="p">,</span>
+                        <span class="s1">&#39;gender_filter&#39;</span><span class="p">:</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Select</span><span class="p">,</span>
+                        <span class="s1">&#39;name_filter&#39;</span><span class="p">:</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">TextInput</span><span class="p">,</span>
+                        <span class="s1">&#39;location_filter&#39;</span><span class="p">:</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Select</span>
+                    <span class="p">}),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">entry_counter</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">preview_button</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">filter_description</span>
+            <span class="p">),</span>
+            <span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_gallery</span><span class="p">,</span> <span class="n">sizing_mode</span><span class="o">=</span><span class="s1">&#39;stretch_width&#39;</span><span class="p">),</span>
+                <span class="n">sizing_mode</span><span class="o">=</span><span class="s1">&#39;stretch_width&#39;</span><span class="p">,</span> <span class="n">scroll</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span>
+            <span class="p">),</span>  <span class="c1"># Enable horizontal scrolling</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span>
+        <span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="get_image_data">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.get_image_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_image_data</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts and returns metadata and statistical information from an image file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image_path (str): The file path to the image.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the following keys:</span>
+<span class="sd">            - &#39;filename&#39; (str): The name of the image file.</span>
+<span class="sd">            - &#39;width&#39; (int): The width of the image in pixels.</span>
+<span class="sd">            - &#39;height&#39; (int): The height of the image in pixels.</span>
+<span class="sd">            - &#39;mode&#39; (str): The mode of the image (e.g., &#39;RGB&#39;, &#39;L&#39;).</span>
+<span class="sd">            - &#39;mean_pixel_value&#39; (float): The mean value of the pixels in the image.</span>
+<span class="sd">            - &#39;average_color&#39; (tuple): The average color of the image as an (R, G, B) tuple.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>  <span class="c1"># Open the image file</span>
+        <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>  <span class="c1"># Convert the image to a numpy array</span>
+        <span class="n">average_color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img_array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>  <span class="c1"># Calculate the average color</span>
+        <span class="n">mean_pixel_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img_array</span><span class="p">)</span>  <span class="c1"># Calculate the mean pixel value</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span>
+            <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+            <span class="s1">&#39;mean_pixel_value&#39;</span><span class="p">:</span> <span class="n">mean_pixel_value</span><span class="p">,</span>
+            <span class="s1">&#39;average_color&#39;</span><span class="p">:</span> <span class="n">average_color</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="parse_filename">
+<a class="viewcode-back" href="../../../api/src.DataVisualization.html#src.DataVisualization.PokemonImageVisualization.parse_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses the filename to extract metadata.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename (str): The name of the image file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the following keys:</span>
+<span class="sd">            - &#39;index&#39; (int): The index of the image.</span>
+<span class="sd">            - &#39;location&#39; (str): The location of the image.</span>
+<span class="sd">            - &#39;name&#39; (str): The name of the Pokémon.</span>
+<span class="sd">            - &#39;shiny&#39; (str): The shiny status of the Pokémon.</span>
+<span class="sd">            - &#39;gender&#39; (str): The gender of the Pokémon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">location_name</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">shiny</span> <span class="o">=</span> <span class="s1">&#39;Shiny&#39;</span> <span class="k">if</span> <span class="s1">&#39;Shiny&#39;</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">else</span> <span class="s1">&#39;Normal&#39;</span>
+    <span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;Unknown&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;Male &amp; Female&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;Male &amp; Female&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Male&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;Male&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;Female&#39;</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;Female&#39;</span>
+    
+    <span class="n">location</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">location_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s1">&#39;shiny&#39;</span><span class="p">:</span> <span class="n">shiny</span><span class="p">,</span>
+        <span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="n">gender</span>
+    <span class="p">}</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Select the folder containing the images</span>
+    <span class="n">IMAGE_FOLDER_PATH</span> <span class="o">=</span> <span class="n">select_folder</span><span class="p">()</span>
+    <span class="c1"># Prompt the user to choose between using a random subset or the entire dataset</span>
+    <span class="n">USE_SUBSET</span> <span class="o">=</span> <span class="n">prompt_subset_choice</span><span class="p">()</span>
+
+    <span class="c1"># Initialize Panel extension</span>
+    <span class="n">pn</span><span class="o">.</span><span class="n">extension</span><span class="p">()</span>
+
+    <span class="c1"># Create and serve the dashboard</span>
+    <span class="n">dashboard</span> <span class="o">=</span> <span class="n">PokemonDashboard</span><span class="p">()</span>
+    <span class="n">pn</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Willi-Bon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+src.DatabaseScraper namespace
+=============================
+
+.. py:module:: src.DatabaseScraper
+
+Submodules
+----------
+
+src.DatabaseScraper.DatabaseScraper module
+------------------------------------------
+
+.. automodule:: src.DatabaseScraper.DatabaseScraper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.DatabaseScraper.ImageOverlay module
+---------------------------------------
+
+.. automodule:: src.DatabaseScraper.ImageOverlay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.DatabaseScraper.TotalPokemon module
+---------------------------------------
+
+.. automodule:: src.DatabaseScraper.TotalPokemon
+   :members:
+   :undoc-members:
+   :show-inheritance:
