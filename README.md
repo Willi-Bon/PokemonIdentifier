@@ -8,7 +8,7 @@ Homework 3 visualizes the dataset that will be used. This uses a dashboard that 
 Additionally, the dashboard has an interactive table which allows filtering of dataset images based on different parameters. Based on inputted parameters, different previews of the images can be outputted.
 To use this:
 1. Install all packages in the 'requirements.txt' file in the docs folder.
-2. Download the dataset from the following public outlook folder:
+2. Download the dataset from the following public outlook folder: https://drexel0-my.sharepoint.com/:u:/g/personal/whb33_drexel_edu/EdM5JlNdGa1NlTMztqAlth4BiAmX8Zvr75ohSlunMOxf5g?e=T1cHjv
 3. Run 'PokemonImageVisualization.py' in the src folder.
 4. Upon running, select downloaded dataset folder.
 5. Select whether dashboard should depict a subset of the dataset (500 images, takes about one minute) or the entire dataset (>5000 images takes about ten minutes).
