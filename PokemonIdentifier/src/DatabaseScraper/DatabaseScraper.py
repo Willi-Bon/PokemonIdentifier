@@ -43,7 +43,7 @@ def scrape_pokemon_data():
 
     # Find all Pokémon entries on the page
     pokemon_entries = soup.find_all('div', class_='pokemon-entry')
-
+    
     for entry in pokemon_entries:
         # Extract Pokémon name
         name = entry.find('h3').text.strip()

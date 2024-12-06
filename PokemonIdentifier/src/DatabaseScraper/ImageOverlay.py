@@ -1,20 +1,10 @@
 from PIL import Image
+from tkinter.filedialog import askopenfilename, askdirectory
 import os
-import sys
 import tkinter as tk
-from tkinter import filedialog, simpledialog
+from tkinter import simpledialog
 
-def overlay_images(background_path, overlay_path):
-    """
-    Overlays two images with the overlay image resized and centered on the background image.
-
-    Args:
-        background_path (str): The file path to the background image.
-        overlay_path (str): The file path to the overlay image.
-
-    Returns:
-        Image: The resulting image with the overlay applied.
-    """
+def overlay_images(background_path, overlay_path): #Function to Overlay two images
     # Load the background and overlay images
     background = Image.open(background_path)
     overlay = Image.open(overlay_path)
@@ -38,28 +28,30 @@ def overlay_images(background_path, overlay_path):
     overlay_canvas = Image.new("RGBA", background.size)
     overlay_canvas.paste(overlay_resized, (x, y), overlay_resized)
 
-    return overlay_canvas
+    # Composite the images together
+    combined = Image.alpha_composite(background, overlay_canvas)
+    return combined
 
-if __name__ == "__main__":
-    # Code that should not run during Sphinx documentation build
-    folder_path = filedialog.askdirectory(title="Select Folder Containing Pokemon Images")  # Path to folder containing pokemon images
-    background_path = filedialog.askopenfilename(title="Select Background File", filetypes=[("PNG files", "*.png"), ("All files", "*.*")])  # Path to background image
-    # Create a simple GUI to accept a string
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    output_filename = simpledialog.askstring("Input", "Enter the output filename prefix:")
+folder_path = askdirectory(title="Select Folder Containing Pokemon Images") #Path to folder containing pokemon images
+background_path = askopenfilename(title="Select Background File", filetypes=[("PNG files", "*.png"), ("All files", "*.*")]) #Path to background image
+# Create a simple GUI to accept a string
+root = tk.Tk()
+root.withdraw()  # Hide the main window
+output_filename = simpledialog.askstring("Input", "Enter the output filename prefix:")
 
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".png"):
-            overlay_path = os.path.join(folder_path, filename)
-            combined_image = overlay_images(background_path, overlay_path)
-            # Create a new folder to save the combined images if it doesn't exist
-            output_folder = os.path.join(folder_path, "combined_images")
-            os.makedirs(output_folder, exist_ok=True)
-            
-            # Save the combined image to the new folder
-            output_path = os.path.join(output_folder, f"{output_filename}_{filename}")
-            combined_image.save(output_path)
-            
-            # Optionally, show the combined image
-            #combined_image.show()
+for filename in os.listdir(folder_path):
+    if filename.endswith(".png"):
+        overlay_path = os.path.join(folder_path, filename)
+        combined_image = overlay_images(background_path, overlay_path)
+        # Create a new folder to save the combined images if it doesn't exist
+        output_folder = os.path.join(folder_path, "combined_images")
+        os.makedirs(output_folder, exist_ok=True)
+        
+        # Save the combined image to the new folder
+        output_path = os.path.join(output_folder, f"{output_filename}_{filename}")
+        combined_image.save(output_path)
+        
+        # Optionally, show the combined image
+        #combined_image.show()
+
+print('Images have been combined and saved to the folder "combined_images"')
