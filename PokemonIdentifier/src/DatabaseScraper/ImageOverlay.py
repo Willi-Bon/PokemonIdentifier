@@ -1,10 +1,9 @@
 from PIL import Image
-from tkinter.filedialog import askopenfilename, askdirectory
+from tkinter.filedialog import askopenfilenames, askdirectory
 import os
 import tkinter as tk
-from tkinter import simpledialog
 
-def overlay_images(background_path, overlay_path): #Function to Overlay two images
+def overlay_images(background_path, overlay_path):  # Function to Overlay two images
     # Load the background and overlay images
     background = Image.open(background_path)
     overlay = Image.open(overlay_path)
@@ -32,26 +31,25 @@ def overlay_images(background_path, overlay_path): #Function to Overlay two imag
     combined = Image.alpha_composite(background, overlay_canvas)
     return combined
 
-folder_path = askdirectory(title="Select Folder Containing Pokemon Images") #Path to folder containing pokemon images
-background_path = askopenfilename(title="Select Background File", filetypes=[("PNG files", "*.png"), ("All files", "*.*")]) #Path to background image
-# Create a simple GUI to accept a string
-root = tk.Tk()
-root.withdraw()  # Hide the main window
-output_filename = simpledialog.askstring("Input", "Enter the output filename prefix:")
+folder_path = askdirectory(title="Select Folder Containing Pokemon Images")  # Path to folder containing Pokémon images
+background_paths = askopenfilenames(title="Select Background Files", filetypes=[("PNG files", "*.png"), ("All files", "*.*")])  # Paths to background images
 
-for filename in os.listdir(folder_path):
-    if filename.endswith(".png"):
-        overlay_path = os.path.join(folder_path, filename)
-        combined_image = overlay_images(background_path, overlay_path)
-        # Create a new folder to save the combined images if it doesn't exist
-        output_folder = os.path.join(folder_path, "combined_images")
-        os.makedirs(output_folder, exist_ok=True)
-        
-        # Save the combined image to the new folder
-        output_path = os.path.join(output_folder, f"{output_filename}_{filename}")
-        combined_image.save(output_path)
-        
-        # Optionally, show the combined image
-        #combined_image.show()
+# Process each background image
+for background_path in background_paths:
+    output_filename_prefix = os.path.splitext(os.path.basename(background_path))[0]  # Get the background name without extension
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".png"):
+            overlay_path = os.path.join(folder_path, filename)
+            combined_image = overlay_images(background_path, overlay_path)
+            # Create a new folder to save the combined images if it doesn't exist
+            output_folder = os.path.join(folder_path, "combined_images")
+            os.makedirs(output_folder, exist_ok=True)
+            
+            # Save the combined image to the new folder
+            output_path = os.path.join(output_folder, f"{output_filename_prefix}_{filename}")
+            combined_image.save(output_path)
+            
+            # Optionally, show the combined image
+            # combined_image.show()
 
 print('Images have been combined and saved to the folder "combined_images"')
