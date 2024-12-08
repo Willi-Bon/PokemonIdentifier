@@ -9,9 +9,9 @@ df_api = API()
 df_api.setContext("p/mem679-fall2024") #Instantiate
 collection_id = "c/525610814" #Sets Collection ID
 
-def create_record(data_path):
-    title = "Garfield"
-    description = "I Love Lasagna"
+def create_record(data_path, filename):
+    title = filename
+    description = f"JPG imge of {filename} for Pokemon Identifier Dataset"
         # Create the record in Datafed
     rec_resp = df_api.dataCreate(
         title, 
@@ -43,8 +43,9 @@ def upload_images_in_folder():
     for filename in os.listdir(folder_path):
         if filename.lower().endswith('.jpg'):
             file_path = os.path.join(folder_path, filename)
-            print(f"Uploading: {file_path}")
-            create_record(file_path)
+            filename_without_extension = filename[:-4]
+            print(f"Uploading: {filename}")
+            create_record(file_path, filename_without_extension)
 
     print("All images uploaded.")
 
