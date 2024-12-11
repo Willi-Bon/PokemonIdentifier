@@ -15,3 +15,6 @@ tqdm
 selenium
 beautifulsoup4
 requests
+tensorflow
+datafed
+scikit-learn
