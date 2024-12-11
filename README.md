@@ -9,7 +9,8 @@ To use, perform the following steps:
 3. After model is trained, script will plot training performance and pull an image from Datafed (not used in the training or validation). It will attempt to predict this image.
 4. If future changes are being made to Git repository, make sure to deleted downloaded dataset before syncing commits.
 
-
+\n
+\n
 
 **Homework 3**
 Homework 3 visualizes the dataset that will be used. This uses a dashboard that has a graph depicting the number of Shiny or Normal Pokemon Images, the number of Pokemon images that depend on the Pokemon's gender, and a graph depicting the relationship between image size and average color intensity.
