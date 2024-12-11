@@ -1,6 +1,14 @@
 Welcome to the PokemonIdentifier! This is a project for MEM 679, with the intention to create a machine learning model that can predict what Pokemon is featured in images taken using the Pokemon Go AR feature.
 Below features updates based on the most recent homework submission and a general outline of what is contained in this repository.
 
+**Final Submission**
+Final submission added a Jupyter Notebook that downloads the dataset from Datafed, trains a CNN Model, then uses an image actually taken using Pokemon Go's AR feature and attempts to predict what Pokemon is featured.
+To use, perform the following steps:
+1. Install all packages in the 'requirements.txt' file in the docs folder. This can all be done at once by navigating to the docs directory then using the terminal command pip install -r requirements.txt
+2. Running all will automatically download and unzip Dataset from Datafed. All preprocessing, compiling, and training will occur automatically.
+3. After model is trained, script will plot training performance and pull an image from Datafed (not used in the training or validation). It will attempt to predict this image.
+4. If future changes are being made to Git repository, make sure to deleted downloaded dataset before syncing commits.
+
 
 
 **Homework 3**
