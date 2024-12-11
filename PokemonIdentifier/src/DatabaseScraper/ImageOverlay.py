@@ -14,7 +14,7 @@ def overlay_images(background_path, overlay_path):  # Function to Overlay two im
     overlay = overlay.convert("RGBA")
 
     # Calculate the scaling factor to make the overlay 60% of the background width while maintaining aspect ratio
-    scale_factor = 0.8 * background.width / overlay.width
+    scale_factor = 1.1 * background.width / overlay.width
 
     # Resize the overlay with the new scale factor
     new_size = (int(overlay.width * scale_factor), int(overlay.height * scale_factor))
@@ -22,7 +22,7 @@ def overlay_images(background_path, overlay_path):  # Function to Overlay two im
 
     # Calculate the x and y positions to center the overlay horizontally
     x = (background.width - overlay_resized.width) // 2  # Center horizontally
-    y = int(background.height * 0.45)  # Place at 35% of the background height
+    y = int(background.height*0.3)  # Place at the background center
 
     # Create a blank canvas the size of the background and paste the resized overlay onto it
     overlay_canvas = Image.new("RGBA", background.size)
