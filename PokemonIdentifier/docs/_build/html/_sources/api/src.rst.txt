@@ -7,8 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   src.DataFed
    src.DataVisualization
    src.DatabaseScraper
+   src.MachineLearningModel
 
 Module contents
 ---------------

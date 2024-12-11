@@ -13,6 +13,7 @@ import shutil
 sys.path.insert(0, os.path.abspath('../src'))
 sys.path.insert(0, os.path.abspath('..'))
 
+
 # -- Path setup --------------------------------------------------------------
 
 __location__ = os.path.dirname(__file__)
@@ -111,7 +112,7 @@ copyright = "2024, Willi-Bon"
 try:
     from pokemonidentifier import __version__ as version
 except ImportError:
-    version = ""
+    version = "1"
 
 if not version or version.lower() == "unknown":
     version = os.getenv("READTHEDOCS_VERSION", "unknown")  # automatically set by RTD

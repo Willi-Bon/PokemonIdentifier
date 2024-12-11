@@ -6,20 +6,20 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.DatabaseScraper namespace &mdash; PokemonIdentifier unknown documentation</title>
+  <title>src.DatabaseScraper namespace &mdash; PokemonIdentifier 1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/documentation_options.js?v=29a6c3e3"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="License" href="../license.html" />
+    <link rel="next" title="src.MachineLearningModel namespace" href="src.MachineLearningModel.html" />
     <link rel="prev" title="src.DataVisualization namespace" href="src.DataVisualization.html" /> 
 </head>
 
@@ -46,8 +46,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Module Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="src.html">src package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="src.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="src.DataFed.html">src.DataFed namespace</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src.DataVisualization.html">src.DataVisualization namespace</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">src.DatabaseScraper namespace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.MachineLearningModel.html">src.MachineLearningModel namespace</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
@@ -128,19 +130,19 @@ extracts the page content using BeautifulSoup, and processes the data.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DatabaseScraper.ImageOverlay.overlay_images">
 <span class="sig-prename descclassname"><span class="pre">src.DatabaseScraper.ImageOverlay.</span></span><span class="sig-name descname"><span class="pre">overlay_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/DatabaseScraper/ImageOverlay.html#overlay_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DatabaseScraper.ImageOverlay.overlay_images" title="Link to this definition"></a></dt>
-<dd><p>Overlays two images with the overlay image resized and centered on the background image.</p>
+<dd></dd></dl>
+
+</section>
+<section id="module-src.DatabaseScraper.PngToJpgConverter">
+<span id="src-databasescraper-pngtojpgconverter-module"></span><h2>src.DatabaseScraper.PngToJpgConverter module<a class="headerlink" href="#module-src.DatabaseScraper.PngToJpgConverter" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.DatabaseScraper.PngToJpgConverter.convert_png_to_jpg">
+<span class="sig-prename descclassname"><span class="pre">src.DatabaseScraper.PngToJpgConverter.</span></span><span class="sig-name descname"><span class="pre">convert_png_to_jpg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/DatabaseScraper/PngToJpgConverter.html#convert_png_to_jpg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DatabaseScraper.PngToJpgConverter.convert_png_to_jpg" title="Link to this definition"></a></dt>
+<dd><p>Converts all PNG files in the input folder to JPG format
+and saves them in a subfolder named ‘output’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>background_path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The file path to the background image.</p></li>
-<li><p><strong>overlay_path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The file path to the overlay image.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The resulting image with the overlay applied.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Image</p>
+<dd class="field-odd"><p><strong>input_folder</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to the folder containing PNG files.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -204,7 +206,7 @@ extracts the page content using BeautifulSoup, and processes the data.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="src.DataVisualization.html" class="btn btn-neutral float-left" title="src.DataVisualization namespace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="src.MachineLearningModel.html" class="btn btn-neutral float-right" title="src.MachineLearningModel namespace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

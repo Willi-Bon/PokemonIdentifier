@@ -1,0 +1,15 @@
+src.PokemonClassifier namespace
+===============================
+
+.. py:module:: src.PokemonClassifier
+
+Submodules
+----------
+
+src.PokemonClassifier.PokemonIdentifier module
+----------------------------------------------
+
+.. automodule:: src.PokemonClassifier.PokemonIdentifier
+   :members:
+   :undoc-members:
+   :show-inheritance:

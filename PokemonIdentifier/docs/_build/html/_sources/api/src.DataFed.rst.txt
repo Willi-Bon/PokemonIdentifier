@@ -1,0 +1,15 @@
+src.DataFed namespace
+=====================
+
+.. py:module:: src.DataFed
+
+Submodules
+----------
+
+src.DataFed.ImageUpload module
+------------------------------
+
+.. automodule:: src.DataFed.ImageUpload
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,15 @@
+src.MachineLearningModel namespace
+==================================
+
+.. py:module:: src.MachineLearningModel
+
+Submodules
+----------
+
+src.MachineLearningModel.PokemonIdentifier module
+-------------------------------------------------
+
+.. automodule:: src.MachineLearningModel.PokemonIdentifier
+   :members:
+   :undoc-members:
+   :show-inheritance:

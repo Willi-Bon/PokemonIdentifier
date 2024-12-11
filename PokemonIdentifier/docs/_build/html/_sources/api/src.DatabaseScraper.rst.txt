@@ -22,6 +22,14 @@ src.DatabaseScraper.ImageOverlay module
    :undoc-members:
    :show-inheritance:
 
+src.DatabaseScraper.PngToJpgConverter module
+--------------------------------------------
+
+.. automodule:: src.DatabaseScraper.PngToJpgConverter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.DatabaseScraper.TotalPokemon module
 ---------------------------------------
 

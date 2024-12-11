@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.DataFed.ImageUpload &mdash; PokemonIdentifier 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PokemonIdentifier
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PokemonIdentifier</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.DataFed.ImageUpload</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.DataFed.ImageUpload</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span>
+<span class="kn">from</span> <span class="nn">datafed.CommandLib</span> <span class="kn">import</span> <span class="n">API</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">df_api</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+<span class="n">df_api</span><span class="o">.</span><span class="n">setContext</span><span class="p">(</span><span class="s2">&quot;p/mem679-fall2024&quot;</span><span class="p">)</span> <span class="c1">#Instantiate</span>
+<span class="n">collection_id</span> <span class="o">=</span> <span class="s2">&quot;c/525610814&quot;</span> <span class="c1">#Sets Collection ID</span>
+
+<div class="viewcode-block" id="create_record">
+<a class="viewcode-back" href="../../../api/src.DataFed.html#src.DataFed.ImageUpload.create_record">[docs]</a>
+<span class="k">def</span> <span class="nf">create_record</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new data record in Datafed with the given image file.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        data_path (str): The file path to the image data to be uploaded.</span>
+<span class="sd">        filename (str): The name of the image file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    This function performs the following steps:</span>
+<span class="sd">    1. Constructs a title and description for the data record based on the filename.</span>
+<span class="sd">    2. Creates a new data record in Datafed with the specified metadata.</span>
+<span class="sd">    3. Extracts the ID of the newly created data record.</span>
+<span class="sd">    4. Uploads the image data to the newly created data record.</span>
+<span class="sd">    5. Prints the ID of the new data record and the response from the data upload.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Construct the title and description for the data record</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;JPG image of </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> for Pokemon Identifier Dataset&quot;</span>
+    
+    <span class="c1"># Create the record in Datafed with the specified metadata</span>
+    <span class="n">rec_resp</span> <span class="o">=</span> <span class="n">df_api</span><span class="o">.</span><span class="n">dataCreate</span><span class="p">(</span>
+        <span class="n">title</span><span class="p">,</span> 
+        <span class="n">metadata</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+            <span class="s2">&quot;Title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> 
+            <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span> 
+            <span class="s2">&quot;Authorship&quot;</span><span class="p">:</span> <span class="s2">&quot;William Bonnecaze&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Affiliation&quot;</span><span class="p">:</span> <span class="s2">&quot;Drexel University&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;Datatype&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;Dataformat&quot;</span><span class="p">:</span> <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Keywords&quot;</span><span class="p">:</span> <span class="s2">&quot;Pokemon, Augmented Reality, Identification, Machine Learning&quot;</span>
+        <span class="p">}),</span> 
+        <span class="n">parent_id</span><span class="o">=</span><span class="n">collection_id</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Extract the ID of the new data record</span>
+    <span class="n">this_rec_id</span> <span class="o">=</span> <span class="n">rec_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">this_rec_id</span><span class="p">)</span>
+    
+    <span class="c1"># Upload the image data to the newly created data record</span>
+    <span class="n">put_resp</span> <span class="o">=</span> <span class="n">df_api</span><span class="o">.</span><span class="n">dataPut</span><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="n">this_rec_id</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">put_resp</span><span class="p">)</span>
+    
+    <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="upload_images_in_folder">
+<a class="viewcode-back" href="../../../api/src.DataFed.html#src.DataFed.ImageUpload.upload_images_in_folder">[docs]</a>
+<span class="k">def</span> <span class="nf">upload_images_in_folder</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens a dialog to select a folder and uploads all JPG images in the selected folder.</span>
+<span class="sd">    This function uses tkinter to open a folder selection dialog. Once a folder is selected,</span>
+<span class="sd">    it iterates through all JPG files in the folder, prints the name of each file being uploaded,</span>
+<span class="sd">    and calls the create_record function to handle the upload process.</span>
+<span class="sd">    If no folder is selected, the function prints a message and returns.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Use tkinter to open a dialog for selecting a folder</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>  <span class="c1"># Hide the root window</span>
+    <span class="n">folder_path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Select Folder with JPG Images&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if a folder was selected</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">folder_path</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No folder selected.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Iterate through all JPG files in the selected folder</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+        <span class="c1"># Check if the file has a .jpg extension (case insensitive)</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">):</span>
+            <span class="c1"># Construct the full file path</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="c1"># Remove the file extension from the filename</span>
+            <span class="n">filename_without_extension</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Call the create_record function to upload the image</span>
+            <span class="n">create_record</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">filename_without_extension</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All images uploaded.&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># Call the function to start the upload process</span>
+<span class="n">upload_images_in_folder</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Willi-Bon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
